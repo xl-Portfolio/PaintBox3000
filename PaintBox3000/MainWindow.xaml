@@ -1,0 +1,73 @@
+﻿<Window x:Class="PaintBox3000.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PaintBox3000"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid ClipToBounds="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Panel.ZIndex="1"
+                    ClipToBounds="False"
+                    Orientation="Horizontal" 
+                    Margin="5,5,5,5" 
+                    Grid.ColumnSpan="2"
+                    Background="Black">
+            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Shapes">
+                <StackPanel x:Name="StackPanelShapes" ClipToBounds="False">
+                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Line" 
+                            Click="OnPaintLine" />
+                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Rectangle" 
+                            Click="OnPaintRectangle"/>
+                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Ellipse" 
+                            Click="OnPaintEllipse" />
+                </StackPanel>
+            </Expander>
+            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Stroke">
+                <StackPanel x:Name="StackPanelStroke" ClipToBounds="False">
+                    <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                    <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                    <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                    <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                    <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                </StackPanel>
+            </Expander>
+            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Fill">
+                <StackPanel x:Name="StackPanelFill" ClipToBounds="False">
+                    <Button Background="Red" Height="10" Width="10" Click="OnFillColorChanged"/>
+                    <Button Background="Orange" Height="10" Width="10" Click="OnFillColorChanged"/>
+                    <Button Background="Aquamarine" Height="10" Width="10" Click="OnFillColorChanged"/>
+                    <Button Background="BlueViolet" Height="10" Width="10" Click="OnFillColorChanged"/>
+                    <Button Background="GreenYellow" Height="10" Width="10" Click="OnFillColorChanged"/>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+        <Canvas x:Name="Canvas"
+                Grid.Row="0"
+                Panel.ZIndex="0"
+                Background="White"
+                MouseLeftButtonDown="OnPressed"
+                MouseMove="OnMoved"
+                MouseLeftButtonUp="OnReleased">
+        </Canvas>
+        <Button x:Name="ClearBtn"
+                Grid.Row="2"
+                Panel.ZIndex="1"
+                Height="30"
+                Background="Black"
+                Content="Clear"
+                FontFamily="Cascadia Code"
+                Foreground="White"
+                FontSize="22"
+                FontStretch="Expanded"
+                Click="OnClick"
+                />
+    </Grid>
+</Window>
+

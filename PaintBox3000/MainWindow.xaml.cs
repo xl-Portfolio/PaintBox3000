@@ -78,9 +78,20 @@ namespace PaintBox3000
 			this.Cursor = cursor;
 			activeShape = null;
 		}
-		private void OnClick(object sender, RoutedEventArgs e)
+
+		private void OnClickClear(object sender, RoutedEventArgs e)
 		{
 			Canvas.Children.Clear();
+		}
+
+		private void OnClickUndo(object sender, RoutedEventArgs e)
+		{
+			return;
+		}
+
+		private void OnClickRedo(object sender, RoutedEventArgs e)
+		{
+			return;
 		}
 	}
 }

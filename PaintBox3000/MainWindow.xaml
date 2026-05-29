@@ -4,8 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintBox3000"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="PaintBox3000" Height="450" Width="800">
+        Title="PaintBox3000" Height="720" Width="1280">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="BaGr1" Color="Black"/>
+        <SolidColorBrush x:Key="FoGr1" Color="White"/>
+        <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
+        <sys:Double x:Key="FontSize1">12</sys:Double>
+        <FontStretch x:Key="Stretch1">Expanded</FontStretch>
+
+        <Style x:Key="BaseStyle" TargetType="Control">
+            <Setter Property="Background" Value="{StaticResource BaGr1}"/>
+            <Setter Property="Foreground" Value="{StaticResource FoGr1}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Font1}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSize1}"/>
+            <Setter Property="FontStretch" Value="{StaticResource Stretch1}"/>
+        </Style>
+        <Style TargetType="Menu" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="ToolBar" BasedOn="{StaticResource BaseStyle}"/>
+    </Window.Resources>
+
     <Grid ClipToBounds="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -15,60 +36,56 @@
                     VerticalAlignment="Top"
                     Panel.ZIndex="1"
                     Orientation="Vertical">
-            <Menu Background="Black">
-                <Menu.Resources>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="MinWidth" Value="50"/>
-                        <Setter Property="MinHeight" Value="20"/>
-                        <Setter Property="Background" Value="Black"/>
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontFamily" Value="Cascadia Code"/>
-                        <Setter Property="FontSize" Value="12"/>
-                        <Setter Property="FontStretch" Value="Expanded"/>
-                    </Style>
-                </Menu.Resources>
+            <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
                     <MenuItem Header="_Save"/>
                 </MenuItem>
                 <MenuItem Header="_Edit"/>
             </Menu>
-            <ToolBarTray Background="Black">
-                <ToolBar FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" MinHeight="20"/>
+            <ToolBarTray Background="{StaticResource BaGr1}" MinHeight="20">
+                <ToolBar x:Name="ToolBarUndo">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+                    </ToolBar.Resources>
+                    <Button x:Name="ClearBtn" Content="Clear" Click="OnClickClear"/>
+                    <Button x:Name="UndoBtn" Content="Undo" Click="OnClickUndo"/>
+                    <Button x:Name="RedoBtn" Content="Redo" Click="OnClickRedo"/>
+                </ToolBar>
+                <ToolBar x:Name="ToolBarShapes">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+                    </ToolBar.Resources>
+                    <Button Content="Line" Click="OnPaintLine" />
+                    <Button Content="Rectangle" Click="OnPaintRectangle"/>
+                    <Button Content="Ellipse" Click="OnPaintEllipse" />
+                </ToolBar>
+                <ToolBar x:Name="ToolBarColors">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton" BasedOn="{StaticResource BaseStyle}"/>
+                    </ToolBar.Resources>
+                    <ToggleButton x:Name="PopUpStroke" Content="Stroke ▼"/>
+                    <Popup IsOpen="{Binding IsChecked, ElementName=PopUpStroke}" StaysOpen="False">
+                        <StackPanel>
+                            <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                        </StackPanel>
+                    </Popup>
+                    <ToggleButton x:Name="PopUpFill" Content="Fill ▼"/>
+                    <Popup IsOpen="{Binding IsChecked, ElementName=PopUpFill}" StaysOpen="False">
+                        <StackPanel>
+                            <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                        </StackPanel>
+                    </Popup>
+                </ToolBar>
             </ToolBarTray>
-
-            <StackPanel ClipToBounds="False"
-                        Orientation="Horizontal"
-                        Background="Black">
-            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Shapes">
-                <StackPanel x:Name="StackPanelShapes" ClipToBounds="False">
-                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Line" 
-                            Click="OnPaintLine" />
-                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Rectangle" 
-                            Click="OnPaintRectangle"/>
-                    <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Ellipse" 
-                            Click="OnPaintEllipse" />
-                </StackPanel>
-            </Expander>
-            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Stroke">
-                <StackPanel x:Name="StackPanelStroke" ClipToBounds="False">
-                    <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                    <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                    <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                    <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                    <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                </StackPanel>
-            </Expander>
-            <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Fill">
-                <StackPanel x:Name="StackPanelFill" ClipToBounds="False">
-                    <Button Background="Red" Height="10" Width="10" Click="OnFillColorChanged"/>
-                    <Button Background="Orange" Height="10" Width="10" Click="OnFillColorChanged"/>
-                    <Button Background="Aquamarine" Height="10" Width="10" Click="OnFillColorChanged"/>
-                    <Button Background="BlueViolet" Height="10" Width="10" Click="OnFillColorChanged"/>
-                    <Button Background="GreenYellow" Height="10" Width="10" Click="OnFillColorChanged"/>
-                </StackPanel>
-            </Expander>
-        </StackPanel>
         </StackPanel>
         <Canvas x:Name="Canvas"
                 Grid.Row="0"
@@ -78,18 +95,7 @@
                 MouseMove="OnMoved"
                 MouseLeftButtonUp="OnReleased">
         </Canvas>
-        <Button x:Name="ClearBtn"
-                Grid.Row="2"
-                Panel.ZIndex="1"
-                Height="30"
-                Background="Black"
-                Content="Clear"
-                FontFamily="Cascadia Code"
-                Foreground="White"
-                FontSize="22"
-                FontStretch="Expanded"
-                Click="OnClick"
-                />
+        
     </Grid>
 </Window>
 

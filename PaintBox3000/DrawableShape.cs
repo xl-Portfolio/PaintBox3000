@@ -7,22 +7,36 @@ namespace PaintBox3000
 {
 	public abstract class DrawableShape : IDrawable
 	{
-		protected Canvas canvas;
 		protected Brush? stroke;
-		protected double strokeThickness;
+		protected double strokeThickness = 3;
 		protected double x1 = 0d, x2 = 0d, y1 = 0d, y2 = 0d;
 		public abstract Shape? Visual { get; }
-		//protected double strokeThickness;
 
-		protected DrawableShape(Canvas canvas, Brush stroke)
+		protected DrawableShape(Brush stroke)
 		{
-			this.canvas = canvas;
 			this.stroke = stroke;
 			this.strokeThickness = 3;
 		}
-		public abstract void OnPressed(double x1, double y1);
-		public abstract void OnMoved(double x2, double y2);
+		protected void ApplyStrokeToVisual()
+		{
+			if (Visual != null)
+			{
+				Visual.Stroke = stroke;
+				Visual.StrokeThickness = strokeThickness;
+			}
+		}
+		public virtual void OnPressed(double x1, double y1)
+		{
+			this.x1 = x1;
+			this.y1 = y1;
+		}
+		public virtual void OnMoved(double x2, double y2)
+		{
+			Canvas.SetTop(Visual, y2 > y1 ? y1 : y2);
+			Canvas.SetLeft(Visual, x2 > x1 ? x1 : x2);
+			Visual.Width = Math.Abs(x2 - x1);
+			Visual.Height = Math.Abs(y2 - y1);
+		}
 
-		//public abstract void OnReleased();
 	}
 }

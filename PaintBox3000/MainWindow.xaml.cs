@@ -60,9 +60,9 @@ namespace PaintBox3000
 			this.Cursor = Cursors.Cross;
 			activeShape = activeType switch
 			{
-				ShapeType.Line => new DrawableLine(this.Canvas, activeStroke),
-				ShapeType.Ellipse => new DrawableEllipse(this.Canvas, activeStroke, activeFill),
-				ShapeType.Rectangle => new DrawableRectangle(this.Canvas, activeStroke, activeFill),
+				ShapeType.Line => new DrawableLine(activeStroke),
+				ShapeType.Ellipse => new DrawableEllipse(activeStroke, activeFill),
+				ShapeType.Rectangle => new DrawableRectangle(activeStroke, activeFill),
 				_ => throw new NotImplementedException()
 			};
 			activeShape.OnPressed(e.GetPosition(Canvas).X, e.GetPosition(Canvas).Y);

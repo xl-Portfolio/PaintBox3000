@@ -25,6 +25,7 @@
         <Style TargetType="Menu" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="ToolBar" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
     </Window.Resources>
 
     <Grid ClipToBounds="False">
@@ -77,11 +78,11 @@
                     <ToggleButton x:Name="PopUpFill" Content="Fill ▼"/>
                     <Popup IsOpen="{Binding IsChecked, ElementName=PopUpFill}" StaysOpen="False">
                         <StackPanel>
-                            <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
+                            <Button Background="Red" Height="10" Width="10" Click="OnFillColorChanged"/>
+                            <Button Background="Orange" Height="10" Width="10" Click="OnFillColorChanged"/>
+                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnFillColorChanged"/>
+                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnFillColorChanged"/>
+                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnFillColorChanged"/>
                         </StackPanel>
                     </Popup>
                 </ToolBar>
@@ -95,7 +96,7 @@
                 MouseMove="OnMoved"
                 MouseLeftButtonUp="OnReleased">
         </Canvas>
-        
+        <StatusBar Grid.Row="1" />
     </Grid>
 </Window>
 

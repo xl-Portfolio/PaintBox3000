@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintBox3000"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PaintBox3000" Height="450" Width="800">
     <Grid ClipToBounds="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -14,11 +14,32 @@
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
                     Panel.ZIndex="1"
-                    ClipToBounds="False"
-                    Orientation="Horizontal" 
-                    Margin="5,5,5,5" 
-                    Grid.ColumnSpan="2"
-                    Background="Black">
+                    Orientation="Vertical">
+            <Menu Background="Black">
+                <Menu.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="MinWidth" Value="50"/>
+                        <Setter Property="MinHeight" Value="20"/>
+                        <Setter Property="Background" Value="Black"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontFamily" Value="Cascadia Code"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="FontStretch" Value="Expanded"/>
+                    </Style>
+                </Menu.Resources>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open"/>
+                    <MenuItem Header="_Save"/>
+                </MenuItem>
+                <MenuItem Header="_Edit"/>
+            </Menu>
+            <ToolBarTray Background="Black">
+                <ToolBar FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" MinHeight="20"/>
+            </ToolBarTray>
+
+            <StackPanel ClipToBounds="False"
+                        Orientation="Horizontal"
+                        Background="Black">
             <Expander ClipToBounds="False" FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Header="Shapes">
                 <StackPanel x:Name="StackPanelShapes" ClipToBounds="False">
                     <Button FontFamily="Cascadia Code" Foreground="White" FontSize="12" FontStretch="Expanded" Background="Black" Content="Line" 
@@ -47,6 +68,7 @@
                     <Button Background="GreenYellow" Height="10" Width="10" Click="OnFillColorChanged"/>
                 </StackPanel>
             </Expander>
+        </StackPanel>
         </StackPanel>
         <Canvas x:Name="Canvas"
                 Grid.Row="0"

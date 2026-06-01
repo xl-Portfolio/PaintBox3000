@@ -13,6 +13,7 @@
         <SolidColorBrush x:Key="FoGr1" Color="White"/>
         <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
         <sys:Double x:Key="FontSize1">12</sys:Double>
+        <sys:Double x:Key="Fontsize2">10</sys:Double>
         <FontStretch x:Key="Stretch1">Expanded</FontStretch>
 
         <Style x:Key="BaseStyle" TargetType="Control">
@@ -26,7 +27,9 @@
         <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="ToolBar" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
-        <Style TargetType="Label" BasedOn="{StaticResource BaseStyle}"/>
+        <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
+        </Style>
     </Window.Resources>
 
     <Grid ClipToBounds="False">
@@ -34,10 +37,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0"
-                    VerticalAlignment="Top"
-                    Panel.ZIndex="1"
-                    Orientation="Vertical">
+        <StackPanel Grid.Row="0" VerticalAlignment="Top" Panel.ZIndex="1" Orientation="Vertical">
             <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
@@ -90,16 +90,22 @@
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
-        <Canvas x:Name="Canvas"
-                Grid.Row="0"
-                Panel.ZIndex="0"
-                Background="White"
-                MouseLeftButtonDown="OnPressed"
-                MouseMove="OnMoved"
-                MouseLeftButtonUp="OnReleased">
-        </Canvas>
+        <Canvas x:Name="Canvas" Grid.Row="0" Panel.ZIndex="0" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" 
+                MouseLeftButtonUp="OnReleased"/>
         <StatusBar Grid.Row="1">
-            <Label Content="active Color, active StrokeThickness"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
+                <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
+                <Label x:Name="LblStatStrokeThickness" Content="3p" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
+                <Border x:Name="LblSBStrokeColor" Height="10" Width="10" Padding="0" Background="White">
+                    <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>
+                <Border x:Name="LblSBFillColor" Height="10" Width="10" Padding="0" Background="White">
+                    <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </StackPanel>
         </StatusBar>
     </Grid>
 </Window>

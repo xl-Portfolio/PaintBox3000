@@ -20,43 +20,55 @@ namespace PaintBox3000
 		private Cursor cursor;
 		private ToolMode? activeTool;
 		private Drawables? activeShape;
-		private Brush? activeFill;
-		private Brush? activeStroke;
+		private SolidColorBrush? activeFill;
+		private SolidColorBrush? activeStroke;
 
 		private Stack<UIElement> _history = new();
+		private Stack<UIElement>? _undoHistory = new();
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			cursor = this.Cursor;
-			//activeType = null;
-			////activeStroke = null;
-			//activeFill = null;
+			activeShape = null;
 		}
+		private void UpdateSB(Label label, ToolMode? tool) => label.Content = tool.ToString();
+		private void UpdateSB(Border border, SolidColorBrush brush)
+		{
+			border.Background = brush;
+			((TextBlock)border.Child).Foreground = brush;
+		}
+
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
+			UpdateSB(LblSBTool, activeTool);
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Ellipse;
+			UpdateSB(LblSBTool, activeTool);
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Rectangle;
+			UpdateSB(LblSBTool, activeTool);
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Freehand;
+			UpdateSB(LblSBTool, activeTool);
 		}
 		private void OnStrokeColorChanged(object sender, RoutedEventArgs e)
 		{
-			activeStroke = ((Button)sender).Background;
+			activeStroke = (SolidColorBrush)((Button)sender).Background;
+			UpdateSB(LblSBStrokeColor, activeStroke);
 		}
 
 		private void OnFillColorChanged(object sender, RoutedEventArgs e)
 		{
-			activeFill = ((Button)sender).Background;
+			activeFill = (SolidColorBrush?)((Button)sender).Background;
+			UpdateSB(LblSBFillColor, activeFill);
 		}
 
 
@@ -96,13 +108,19 @@ namespace PaintBox3000
 
 		private void OnClickUndo(object sender, RoutedEventArgs e)
 		{
-			if (_history.Count < 0) return;
-			Canvas.Children.Remove(_history.Pop());
+			if (_history.Count == 0) return;
+			var stackItem = _history.Pop();
+			_undoHistory.Push(stackItem);
+			Canvas.Children.Remove(stackItem);
+			
 		}
 
 		private void OnClickRedo(object sender, RoutedEventArgs e)
 		{
-			return;
+			if (_undoHistory.Count == 0) return;
+				var stackItem = _undoHistory.Pop();
+				_history.Push(stackItem);
+				Canvas.Children.Add(stackItem);
 		}
 
 

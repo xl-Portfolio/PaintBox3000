@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Windows.Shapes;
 
 namespace PaintBox3000
 {
-	internal class DrawableLine : DrawableShape
+	internal class DrawableLine : Drawables
 	{
 		private readonly Line _line;
 		public override Shape? Visual => _line;
@@ -17,18 +18,19 @@ namespace PaintBox3000
 		{
 			_line = new();
 			ApplyStrokeToVisual();
+
 		}
-		public override void OnPressed(double x1, double y1)
+		public override void SetStart(Point p)
 		{
-			_line.X1 = x1;
-			_line.X2 = x1;
-			_line.Y1 = y1;
-			_line.Y2 = y1;
+			_line.X1 = p.X;
+			_line.X2 = p.X;
+			_line.Y1 = p.Y;
+			_line.Y2 = p.Y;
 		}
-		public override void OnMoved(double x2, double y2)
+		public override void SetSize(Point p)
 		{
-			_line.X2 = x2;
-			_line.Y2 = y2;
+			_line.X2 = p.X;
+			_line.Y2 = p.Y;
 		}
 
 

@@ -26,6 +26,7 @@
         <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="ToolBar" BasedOn="{StaticResource BaseStyle}"/>
         <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="Label" BasedOn="{StaticResource BaseStyle}"/>
     </Window.Resources>
 
     <Grid ClipToBounds="False">
@@ -58,8 +59,9 @@
                         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
                     </ToolBar.Resources>
                     <Button Content="Line" Click="OnPaintLine" />
-                    <Button Content="Rectangle" Click="OnPaintRectangle"/>
+                    <Button Content="Rectangle" Click="OnPaintRectangle" />
                     <Button Content="Ellipse" Click="OnPaintEllipse" />
+                    <Button Content="Freehand" Click="OnPaintFreehand" />
                 </ToolBar>
                 <ToolBar x:Name="ToolBarColors">
                     <ToolBar.Resources>
@@ -96,7 +98,9 @@
                 MouseMove="OnMoved"
                 MouseLeftButtonUp="OnReleased">
         </Canvas>
-        <StatusBar Grid.Row="1" />
+        <StatusBar Grid.Row="1">
+            <Label Content="active Color, active StrokeThickness"/>
+        </StatusBar>
     </Grid>
 </Window>
 

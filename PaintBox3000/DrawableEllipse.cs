@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace PaintBox3000
 {
-	public class DrawableEllipse : DrawableShape
+	public class DrawableEllipse : Drawables
 	{
 		private readonly Ellipse _ellipse;
 		public override Shape? Visual => _ellipse;

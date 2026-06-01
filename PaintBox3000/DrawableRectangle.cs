@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace PaintBox3000
 {
-	public class DrawableRectangle : DrawableShape
+	public class DrawableRectangle : Drawables
 	{
 		private readonly Rectangle _rectangle;
 		public override Shape? Visual => _rectangle;

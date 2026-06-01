@@ -14,14 +14,16 @@ namespace PaintBox3000
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public enum ShapeType { Ellipse, Rectangle, Line }
+	public enum ToolMode { Ellipse, Rectangle, Line, Freehand }
 	public partial class MainWindow : Window
 	{
 		private Cursor cursor;
-		private ShapeType? activeType;
-		private DrawableShape? activeShape;
+		private ToolMode? activeTool;
+		private Drawables? activeShape;
 		private Brush? activeFill;
 		private Brush? activeStroke;
+
+		private Stack<UIElement> _history = new();
 
 		public MainWindow()
 		{
@@ -33,15 +35,19 @@ namespace PaintBox3000
 		}
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
-			activeType = ShapeType.Line;
+			activeTool = ToolMode.Line;
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
-			activeType = ShapeType.Ellipse;
+			activeTool = ToolMode.Ellipse;
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
-			activeType = ShapeType.Rectangle;
+			activeTool = ToolMode.Rectangle;
+		}
+		private void OnPaintFreehand(object sender, RoutedEventArgs e)
+		{
+			activeTool = ToolMode.Freehand;
 		}
 		private void OnStrokeColorChanged(object sender, RoutedEventArgs e)
 		{
@@ -56,21 +62,25 @@ namespace PaintBox3000
 
 		private void OnPressed(object sender, MouseButtonEventArgs e)
 		{
-			if (activeType == null || activeStroke == null) return;
+			if (activeTool == null || activeStroke == null) return;
 			this.Cursor = Cursors.Cross;
-			activeShape = activeType switch
+			activeShape = activeTool switch
 			{
-				ShapeType.Line => new DrawableLine(activeStroke),
-				ShapeType.Ellipse => new DrawableEllipse(activeStroke, activeFill),
-				ShapeType.Rectangle => new DrawableRectangle(activeStroke, activeFill),
+				ToolMode.Line => new DrawableLine(activeStroke),
+				ToolMode.Ellipse => new DrawableEllipse(activeStroke, activeFill),
+				ToolMode.Rectangle => new DrawableRectangle(activeStroke, activeFill),
+				ToolMode.Freehand => new DrawableFreehand(activeStroke),
 				_ => throw new NotImplementedException()
 			};
-			activeShape.OnPressed(e.GetPosition(Canvas).X, e.GetPosition(Canvas).Y);
+			activeShape.SetStart(e.GetPosition(Canvas));
+
+			if (activeShape.Visual == null) return;
 			Canvas.Children.Add(activeShape.Visual);
+			_history.Push(activeShape.Visual);
 		}
 		private void OnMoved(object sender, MouseEventArgs e)
 		{
-			activeShape?.OnMoved(e.GetPosition(Canvas).X, e.GetPosition(Canvas).Y);
+			activeShape?.SetSize(e.GetPosition(Canvas));
 		}
 
 		private void OnReleased(object sender, MouseButtonEventArgs e)
@@ -86,12 +96,15 @@ namespace PaintBox3000
 
 		private void OnClickUndo(object sender, RoutedEventArgs e)
 		{
-			return;
+			if (_history.Count < 0) return;
+			Canvas.Children.Remove(_history.Pop());
 		}
 
 		private void OnClickRedo(object sender, RoutedEventArgs e)
 		{
 			return;
 		}
+
+
 	}
 }

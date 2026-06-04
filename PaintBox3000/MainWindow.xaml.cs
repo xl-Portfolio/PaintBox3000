@@ -42,7 +42,7 @@ namespace PaintBox3000
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
-			UpdateSB(LblSBTool, activeTool);
+			UpdateSB(LblSBTool, activeTool); //
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{

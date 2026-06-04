@@ -7,8 +7,8 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="PaintBox3000" Height="720" Width="1280">
-
-    <Window.Resources>
+    <!-- hallo -->
+        <Window.Resources>
         <SolidColorBrush x:Key="BaGr1" Color="Black"/>
         <SolidColorBrush x:Key="FoGr1" Color="White"/>
         <FontFamily x:Key="Font1">Cascadia Code</FontFamily>

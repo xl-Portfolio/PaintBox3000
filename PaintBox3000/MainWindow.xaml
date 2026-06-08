@@ -7,13 +7,13 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="PaintBox3000" Height="720" Width="1280">
-    <!-- hallo -->
-        <Window.Resources>
+
+    <Window.Resources>
         <SolidColorBrush x:Key="BaGr1" Color="Black"/>
         <SolidColorBrush x:Key="FoGr1" Color="White"/>
         <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
         <sys:Double x:Key="FontSize1">12</sys:Double>
-        <sys:Double x:Key="Fontsize2">10</sys:Double>
+        <sys:Double x:Key="Fontsize2">8</sys:Double>
         <FontStretch x:Key="Stretch1">Expanded</FontStretch>
 
         <Style x:Key="BaseStyle" TargetType="Control">
@@ -30,14 +30,26 @@
         <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
             <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
         </Style>
+        <Style x:Key="LblToolBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="TabPanel" BasedOn="{StaticResource BaseStyle}"/>
     </Window.Resources>
-
+    
     <Grid ClipToBounds="False">
         <Grid.RowDefinitions>
+            <RowDefinition x:Name="MenuToolbarRow" Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition x:Name="StatusBarRow" Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" VerticalAlignment="Top" Panel.ZIndex="1" Orientation="Vertical">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="Border1Col" Width="Auto"/>
+            <ColumnDefinition x:Name="CanvasCol" Width="*"/>
+            <ColumnDefinition x:Name="SiedeBarCol" Width="Auto"/>
+            <ColumnDefinition x:Name="Border2Col" Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Top" Orientation="Vertical">
             <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
@@ -65,9 +77,22 @@
                 </ToolBar>
                 <ToolBar x:Name="ToolBarColors">
                     <ToolBar.Resources>
-                        <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton" BasedOn="{StaticResource BaseStyle}"/>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
                     </ToolBar.Resources>
-                    <ToggleButton x:Name="PopUpStroke" Content="Stroke ▼"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="history" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource LblToolBar}"/>
+                        <ComboBox Grid.Row="1" Grid.Column="0"/>
+                        <ComboBox Grid.Row="1" Grid.Column="1"/>
+                    </Grid>
+                   
                     <Popup IsOpen="{Binding IsChecked, ElementName=PopUpStroke}" StaysOpen="False">
                         <StackPanel>
                             <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
@@ -77,7 +102,7 @@
                             <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
                         </StackPanel>
                     </Popup>
-                    <ToggleButton x:Name="PopUpFill" Content="Fill ▼"/>
+                    
                     <Popup IsOpen="{Binding IsChecked, ElementName=PopUpFill}" StaysOpen="False">
                         <StackPanel>
                             <Button Background="Red" Height="10" Width="10" Click="OnFillColorChanged"/>
@@ -90,22 +115,70 @@
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
-        <Canvas x:Name="Canvas" Grid.Row="0" Panel.ZIndex="0" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" 
+        <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaGr1}"/>
+        <Canvas x:Name="Canvas" Grid.Row="1" Grid.Column="1" Margin="0" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" 
                 MouseLeftButtonUp="OnReleased"/>
-        <StatusBar Grid.Row="1">
-            <StackPanel Orientation="Horizontal">
-                <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
-                <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
-                <Label x:Name="LblStatStrokeThickness" Content="3p" Style="{StaticResource LblStatusBar}"/>
-                <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
-                <Border x:Name="LblSBStrokeColor" Height="10" Width="10" Padding="0" Background="White">
-                    <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
-                <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>
-                <Border x:Name="LblSBFillColor" Height="10" Width="10" Padding="0" Background="White">
-                    <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
+        <DockPanel x:Name="SideBar" Grid.Column="2" Grid.Row="1" Width="250" >
+            <DockPanel x:Name="SideBarTop" DockPanel.Dock="Top" Height="25" Width="250" Background="{StaticResource BaGr1}">
+                <Label x:Name="SideBarHeader" SideBarTop.Dock="Left" Content="settings" />
+                <Button x:Name="BtnCloseSideBar" DockPanel.Dock="Right" Height="15" Width="15" Background="White" Foreground="Black" Content="✕" Padding="1,1,1,1" 
+                        FontSize="{StaticResource Fontsize2}" FontWeight="Bold" Click="OnCloseSidebar"/>
+            </DockPanel>
+            <GridSplitter DockPanel.Dock="Left" Width="5" ResizeBehavior="PreviousAndCurrent" Background="{StaticResource BaGr1}"/>
+            <DockPanel DockPanel.Dock="Right" VerticalAlignment="Stretch">
+                <Label Content="brush" DockPanel.Dock="Top"/>
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                    <Label Content="pt" HorizontalAlignment="Center" Target="{Binding ElementName=brushSlider}"/>
+                    <Slider x:Name="brushSlider" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" Height="450"  TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
+                            AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom">
+                    <Label Content="tip" HorizontalAlignment="Center" Margin="0,5,0,0" Target="{Binding ElementName=brushForm}"/>
+                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" >r</RadioButton>
+                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" >s</RadioButton>
+                </StackPanel>
+            </DockPanel>
+            <TabControl>
+                <TabItem Header="Stroke">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <ListBox x:Name="colorList" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle Fill="{Binding Path=Name}" Width="25" Height="25" ToolTip="{Binding Path=MemberType}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+
+                        </ListBox>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Fill">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+        <Border Width="5" Grid.Column="3" Grid.Row="1" Background="{StaticResource BaGr1}"/>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Height="25" Margin="0">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
+                    <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
+                    <Label x:Name="LblStatStrokeThickness" Content="3p" Style="{StaticResource LblStatusBar}"/>
+                    <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
+                    <Border x:Name="LblSBStrokeColor" Height="10" Width="10" Padding="0" Background="White">
+                        <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>
+                    <Border x:Name="LblSBFillColor" Height="10" Width="10" Padding="0" Background="White">
+                        <TextBlock Text="✕" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </StackPanel>
         </StatusBar>
     </Grid>
 </Window>

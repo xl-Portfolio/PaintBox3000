@@ -42,22 +42,26 @@ namespace PaintBox3000
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
-			UpdateSB(LblSBTool, activeTool); //
+			UpdateSB(LblSBTool, activeTool);
+			SideBar.Visibility = Visibility.Visible;
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Ellipse;
 			UpdateSB(LblSBTool, activeTool);
+			SideBar.Visibility = Visibility.Visible;
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Rectangle;
 			UpdateSB(LblSBTool, activeTool);
+			SideBar.Visibility = Visibility.Visible;
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Freehand;
 			UpdateSB(LblSBTool, activeTool);
+			SideBar.Visibility = Visibility.Visible;
 		}
 		private void OnStrokeColorChanged(object sender, RoutedEventArgs e)
 		{
@@ -105,7 +109,6 @@ namespace PaintBox3000
 		{
 			Canvas.Children.Clear();
 		}
-
 		private void OnClickUndo(object sender, RoutedEventArgs e)
 		{
 			if (_history.Count == 0) return;
@@ -114,7 +117,6 @@ namespace PaintBox3000
 			Canvas.Children.Remove(stackItem);
 			
 		}
-
 		private void OnClickRedo(object sender, RoutedEventArgs e)
 		{
 			if (_undoHistory.Count == 0) return;
@@ -123,6 +125,14 @@ namespace PaintBox3000
 				Canvas.Children.Add(stackItem);
 		}
 
+		private void OnCloseSidebar(object sender, RoutedEventArgs e)
+		{
+			SideBar.Visibility = Visibility.Collapsed;
+		}
 
+		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			return;
+		}
 	}
 }

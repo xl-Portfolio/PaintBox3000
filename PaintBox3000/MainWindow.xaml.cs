@@ -38,30 +38,35 @@ namespace PaintBox3000
 			border.Background = brush;
 			((TextBlock)border.Child).Foreground = brush;
 		}
+		private void OpenSideBar(ToolMode? tool)
+		{
+			SideBar.Visibility = Visibility.Visible;
+			SideBarHeader.Content = $"{tool.ToString().ToLower()} settings";
+		}
 
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
 			UpdateSB(LblSBTool, activeTool);
-			SideBar.Visibility = Visibility.Visible;
+			OpenSideBar(activeTool);
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Ellipse;
 			UpdateSB(LblSBTool, activeTool);
-			SideBar.Visibility = Visibility.Visible;
+			OpenSideBar(activeTool);
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Rectangle;
 			UpdateSB(LblSBTool, activeTool);
-			SideBar.Visibility = Visibility.Visible;
+			OpenSideBar(activeTool);
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Freehand;
 			UpdateSB(LblSBTool, activeTool);
-			SideBar.Visibility = Visibility.Visible;
+			OpenSideBar(activeTool);
 		}
 		private void OnStrokeColorChanged(object sender, RoutedEventArgs e)
 		{

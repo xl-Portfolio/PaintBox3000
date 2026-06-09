@@ -93,62 +93,54 @@
                         <ComboBox Grid.Row="1" Grid.Column="1" Width="17" Height="17" />
                     </Grid>
                    
-                    <Popup IsOpen="{Binding IsChecked, ElementName=PopUpStroke}" StaysOpen="False">
-                        <StackPanel>
-                            <Button Background="Red" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="Orange" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnStrokeColorChanged"/>
-                        </StackPanel>
-                    </Popup>
                     
-                    <Popup IsOpen="{Binding IsChecked, ElementName=PopUpFill}" StaysOpen="False">
-                        <StackPanel>
-                            <Button Background="Red" Height="10" Width="10" Click="OnFillColorChanged"/>
-                            <Button Background="Orange" Height="10" Width="10" Click="OnFillColorChanged"/>
-                            <Button Background="Aquamarine" Height="10" Width="10" Click="OnFillColorChanged"/>
-                            <Button Background="BlueViolet" Height="10" Width="10" Click="OnFillColorChanged"/>
-                            <Button Background="GreenYellow" Height="10" Width="10" Click="OnFillColorChanged"/>
-                        </StackPanel>
-                    </Popup>
+                    
+                    
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
+        
         <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaGr1}"/>
+        
         <Canvas x:Name="Canvas" Grid.Row="1" Grid.Column="1" Margin="0" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" 
                 MouseLeftButtonUp="OnReleased"/>
-        <DockPanel x:Name="SideBar" Grid.Column="2" Grid.Row="1" Width="250" >
-            <Border x:Name="SideBarTop" DockPanel.Dock="Top" Height="25" Width="250" Background="{StaticResource BaGr1}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
+        <ScrollViewer x:Name="SideBar" Grid.Column="2" Grid.Row="1" Width="250">
+            <DockPanel>
+                <Border x:Name="SideBarTop" DockPanel.Dock="Top" Height="25" Width="250" Background="{StaticResource BaGr1}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label x:Name="SideBarHeader" Grid.Column="0" HorizontalAlignment="Left" Content="settings" Style="{StaticResource LblToolBar}"/>
-                    <Button x:Name="BtnCloseSideBar" Grid.Column="1" HorizontalAlignment="Right" Height="15" Width="15" Background="White" Foreground="Black" Content="✕" 
+                        <Label x:Name="SideBarHeader" Grid.Column="0" HorizontalAlignment="Left" Content="settings" Style="{StaticResource LblToolBar}"/>
+                        <Button x:Name="BtnCloseSideBar" Grid.Column="1" HorizontalAlignment="Right" Height="15" Width="15" Background="White" Foreground="Black" Content="✕" 
                             Padding="1,1,1,1" FontSize="{StaticResource Fontsize2}" FontWeight="Bold" Click="OnCloseSidebar"/>
-                </Grid>
+                    </Grid>
                 </Border>
-            <GridSplitter DockPanel.Dock="Left" Width="5" ResizeBehavior="PreviousAndCurrent" Background="{StaticResource BaGr1}"/>
-            <DockPanel DockPanel.Dock="Right" VerticalAlignment="Stretch">
-                <Label Content="brush" DockPanel.Dock="Top"/>
-                <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
-                    <Label Content="pt" HorizontalAlignment="Center" Target="{Binding ElementName=brushSlider}"/>
-                    <Slider x:Name="brushSlider" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" Height="450"  TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
-                            AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom">
-                    <Label Content="tip" HorizontalAlignment="Center" Margin="0,5,0,0" Target="{Binding ElementName=brushForm}"/>
-                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" >r</RadioButton>
-                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" >s</RadioButton>
-                </StackPanel>
-            </DockPanel>
-            <TabControl>
-                <TabItem Header="Stroke">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                        <ListBox x:Name="colorList" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <GridSplitter DockPanel.Dock="Left" Width="5" ResizeBehavior="PreviousAndCurrent" Background="{StaticResource BaGr1}"/>
+        <Grid DockPanel.Dock="Right" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="brush" Grid.Row="0"/>
+            <StackPanel Orientation="Vertical" Grid.Row="1">
+                <Label Content="pt" HorizontalAlignment="Center" Target="{Binding ElementName=brushSlider}"/>
+                <Slider x:Name="brushSlider" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" Height="450"  TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
+                        AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Row="2">
+                <Label Content="tip" HorizontalAlignment="Center" Margin="0,5,0,0" Target="{Binding ElementName=brushForm}"/>
+                <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" >r</RadioButton>
+                <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" >s</RadioButton>
+            </StackPanel>
+        </Grid>
+
+                <TabControl>
+                    <TabItem Header="Stroke">
+                        <ListBox x:Name="strokeColorList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnStrokeColorChanged">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel/>
@@ -156,22 +148,34 @@
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Rectangle Fill="{Binding Path=Name}" Width="25" Height="25" ToolTip="{Binding Path=MemberType}"/>
+                                    <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=MemberType}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-
                         </ListBox>
-                    </ScrollViewer>
-                </TabItem>
-                <TabItem Header="Fill">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    </TabItem>
 
-                    </ScrollViewer>
-                </TabItem>
-            </TabControl>
-        </DockPanel>
+                    <TabItem Header="Fill">
+                        <ListBox x:Name="fillColorList" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnFillColorChanged">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=MemberType}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+        </ScrollViewer>
+        
         <Border Width="5" Grid.Column="3" Grid.Row="1" Background="{StaticResource BaGr1}"/>
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Height="25" Margin="0">
+        
+        <StatusBar x:Name="StatusBar" Grid.Row="2" Grid.ColumnSpan="4" Height="25" Margin="0">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
                     <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>

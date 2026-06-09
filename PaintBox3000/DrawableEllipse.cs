@@ -13,10 +13,12 @@ namespace PaintBox3000
 
 		public DrawableEllipse(Brush stroke, Brush? fill) : base(stroke)
 		{
-			_ellipse = new();
-			_ellipse.Fill = fill;
-			_ellipse.Width = 0;
-			_ellipse.Height = 0;
+			_ellipse = new()
+			{
+				Fill = fill,
+				Width = 0,
+				Height = 0
+			};
 			ApplyStrokeToVisual();
 		}
 

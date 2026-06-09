@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Reflection;
 
 namespace PaintBox3000
 {
@@ -20,8 +21,8 @@ namespace PaintBox3000
 		private Cursor cursor;
 		private ToolMode? activeTool;
 		private Drawables? activeShape;
-		private SolidColorBrush? activeFill;
-		private SolidColorBrush? activeStroke;
+		private SolidColorBrush activeFill;
+		private SolidColorBrush activeStroke;
 
 		private Stack<UIElement> _history = new();
 		private Stack<UIElement>? _undoHistory = new();
@@ -30,13 +31,29 @@ namespace PaintBox3000
 		{
 			InitializeComponent();
 			cursor = this.Cursor;
-			activeShape = null;
+			activeStroke = strokeColorList.SelectedItem.cu
+			InitializeSideBar();
 		}
-		private void UpdateSB(Label label, ToolMode? tool) => label.Content = tool.ToString();
-		private void UpdateSB(Border border, SolidColorBrush brush)
+		private void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString();
+		private void UpdateStatBar(Border border, SolidColorBrush brush)
 		{
 			border.Background = brush;
 			((TextBlock)border.Child).Foreground = brush;
+		}
+
+		private void InitializeSideBar()
+		{
+			PropertyInfo[] propertyInfosColor = [.. typeof(Colors).GetProperties()
+				.OrderByDescending((currentColor) =>
+				{
+					Color c = (Color)currentColor.GetValue(null, null);
+					return c.R + c.G + c.B;
+				})];
+			fillColorList.ItemsSource = propertyInfosColor;
+			fillColorList.SelectedIndex = 0;
+			strokeColorList.ItemsSource = propertyInfosColor;
+			strokeColorList.SelectedIndex = 0;
+
 		}
 		private void OpenSideBar(ToolMode? tool)
 		{
@@ -47,39 +64,27 @@ namespace PaintBox3000
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
-			UpdateSB(LblSBTool, activeTool);
+			UpdateStatBar(LblSBTool, activeTool);
 			OpenSideBar(activeTool);
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Ellipse;
-			UpdateSB(LblSBTool, activeTool);
+			UpdateStatBar(LblSBTool, activeTool);
 			OpenSideBar(activeTool);
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Rectangle;
-			UpdateSB(LblSBTool, activeTool);
+			UpdateStatBar(LblSBTool, activeTool);
 			OpenSideBar(activeTool);
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Freehand;
-			UpdateSB(LblSBTool, activeTool);
+			UpdateStatBar(LblSBTool, activeTool);
 			OpenSideBar(activeTool);
 		}
-		private void OnStrokeColorChanged(object sender, RoutedEventArgs e)
-		{
-			activeStroke = (SolidColorBrush)((Button)sender).Background;
-			UpdateSB(LblSBStrokeColor, activeStroke);
-		}
-
-		private void OnFillColorChanged(object sender, RoutedEventArgs e)
-		{
-			activeFill = (SolidColorBrush?)((Button)sender).Background;
-			UpdateSB(LblSBFillColor, activeFill);
-		}
-
 
 		private void OnPressed(object sender, MouseButtonEventArgs e)
 		{
@@ -137,7 +142,22 @@ namespace PaintBox3000
 
 		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
+			//if (xxx == null) return;
 			return;
+		}
+
+		private void OnStrokeColorChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (strokeColorList.SelectedItem == null) return;
+			activeStroke = new((Color)((PropertyInfo)((ListBox)sender).SelectedItem).GetValue(null, null));
+			UpdateStatBar(LblSBStrokeColor, activeStroke);
+		}
+
+		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (fillColorList.SelectedItem == null) return;
+			activeFill = new((Color)((PropertyInfo)((ListBox)sender).SelectedItem).GetValue(null, null));
+			UpdateStatBar(LblSBFillColor, activeFill);
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace PaintBox3000
 	public partial class MainWindow : Window
 	{
 		private Cursor cursor;
-		private ToolMode? activeTool;
+		private ToolMode activeTool;
 		private Drawables? activeShape;
 		private SolidColorBrush activeFill;
 		private SolidColorBrush activeStroke;
@@ -31,15 +31,13 @@ namespace PaintBox3000
 		{
 			InitializeComponent();
 			cursor = this.Cursor;
-			activeStroke = strokeColorList.SelectedItem.cu
 			InitializeSideBar();
+			activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
+			activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
 		}
-		private void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString();
-		private void UpdateStatBar(Border border, SolidColorBrush brush)
-		{
-			border.Background = brush;
-			((TextBlock)border.Child).Foreground = brush;
-		}
+		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
+		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLower();
+		private static SolidColorBrush ToBrush(PropertyInfo pi) => new((Color)pi.GetValue(null, null)!);
 
 		private void InitializeSideBar()
 		{
@@ -52,15 +50,14 @@ namespace PaintBox3000
 			fillColorList.ItemsSource = propertyInfosColor;
 			fillColorList.SelectedIndex = 0;
 			strokeColorList.ItemsSource = propertyInfosColor;
-			strokeColorList.SelectedIndex = 0;
-
+			strokeColorList.SelectedIndex = propertyInfosColor.Length - 1;
 		}
-		private void OpenSideBar(ToolMode? tool)
+		private void OpenSideBar(ToolMode tool)
 		{
 			SideBar.Visibility = Visibility.Visible;
 			SideBarHeader.Content = $"{tool.ToString().ToLower()} settings";
 		}
-
+		
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Line;
@@ -88,7 +85,6 @@ namespace PaintBox3000
 
 		private void OnPressed(object sender, MouseButtonEventArgs e)
 		{
-			if (activeTool == null || activeStroke == null) return;
 			this.Cursor = Cursors.Cross;
 			activeShape = activeTool switch
 			{
@@ -148,16 +144,16 @@ namespace PaintBox3000
 
 		private void OnStrokeColorChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (strokeColorList.SelectedItem == null) return;
-			activeStroke = new((Color)((PropertyInfo)((ListBox)sender).SelectedItem).GetValue(null, null));
-			UpdateStatBar(LblSBStrokeColor, activeStroke);
+			if (strokeColorList.SelectedItem is not PropertyInfo pi) return;
+			activeStroke = ToBrush(pi);
+			UpdateStatBar(LblSBStrokeColor, pi);
 		}
 
 		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (fillColorList.SelectedItem == null) return;
-			activeFill = new((Color)((PropertyInfo)((ListBox)sender).SelectedItem).GetValue(null, null));
-			UpdateStatBar(LblSBFillColor, activeFill);
+			if (fillColorList.SelectedItem is not PropertyInfo pi) return;
+			activeFill = ToBrush(pi);
+			UpdateStatBar(LblSBFillColor, pi);
 		}
 	}
 }

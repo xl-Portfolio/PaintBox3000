@@ -34,6 +34,8 @@ namespace PaintBox3000
 			InitializeSideBar();
 			activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
 			activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
+			BtnLine.IsChecked = true;
+			BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
 		}
 		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
 		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLower();
@@ -154,6 +156,12 @@ namespace PaintBox3000
 			if (fillColorList.SelectedItem is not PropertyInfo pi) return;
 			activeFill = ToBrush(pi);
 			UpdateStatBar(LblSBFillColor, pi);
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			Canvas.Width = Canvas.ActualWidth;
+			Canvas.Height = Canvas.ActualHeight;
 		}
 	}
 }

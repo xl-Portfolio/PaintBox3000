@@ -70,7 +70,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid ClipToBounds="False">
+    <Grid x:Name="MainGrid" ClipToBounds="False">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="MenuToolbarRow" Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -79,8 +79,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="Border1Col" Width="Auto"/>
             <ColumnDefinition x:Name="CanvasCol" Width="*"/>
-            <ColumnDefinition x:Name="Splitter" Width="Auto"/>
-            <ColumnDefinition x:Name="SiedeBarCol" Width="250"/>
+            <ColumnDefinition x:Name="SplitterCol" Width="Auto"/>
+            <ColumnDefinition x:Name="SiedeBarCol" Width="0"/>
             <ColumnDefinition x:Name="Border2Col" Width="Auto"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Orientation="Vertical">
@@ -129,7 +129,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="color history" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource LblToolBar}"/>
+                        <Button Content="color history" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ToolBarStyle}"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <Label Content="S" Style="{StaticResource LblToolBar}"/>
                             <ComboBox Width="17" Height="17" />
@@ -149,8 +149,8 @@
             <Canvas x:Name="Canvas" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" MouseLeftButtonUp="OnReleased"/>
         </ScrollViewer>
 
-        <GridSplitter Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaGr1}"/>
-        <DockPanel x:Name="SideBar" Grid.Row="1" Grid.Column="3" Visibility="Collapsed">
+        <GridSplitter x:Name="Splitter" Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaGr1}"/>
+        <DockPanel x:Name="SideBar" Grid.Row="1" Grid.Column="3">
             <Grid DockPanel.Dock="Top" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -169,7 +169,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Vertical" Grid.Row="0" Margin="0,0,0,5" >
-                    <Label Content="brush" Padding="2,2,2,0"/>
+                    <Label Content="stroke" Padding="2,2,2,0"/>
                     <Label Content="pt" HorizontalAlignment="Center" Padding="2,0,2,2" Target="{Binding ElementName=brushSlider}"/>
                 </StackPanel>
                 <Slider x:Name="brushSlider" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" 

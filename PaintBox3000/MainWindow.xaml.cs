@@ -56,7 +56,8 @@ namespace PaintBox3000
 		}
 		private void OpenSideBar(ToolMode tool)
 		{
-			SideBar.Visibility = Visibility.Visible;
+			MainGrid.ColumnDefinitions[3].Width = new GridLength(250);
+			//SideBar.Visibility = Visibility.Visible;
 			SideBarHeader.Content = $"{tool.ToString().ToLower()} settings";
 		}
 		
@@ -64,25 +65,21 @@ namespace PaintBox3000
 		{
 			activeTool = ToolMode.Line;
 			UpdateStatBar(LblSBTool, activeTool);
-			OpenSideBar(activeTool);
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Ellipse;
 			UpdateStatBar(LblSBTool, activeTool);
-			OpenSideBar(activeTool);
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Rectangle;
 			UpdateStatBar(LblSBTool, activeTool);
-			OpenSideBar(activeTool);
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
 			activeTool = ToolMode.Freehand;
 			UpdateStatBar(LblSBTool, activeTool);
-			OpenSideBar(activeTool);
 		}
 
 		private void OnPressed(object sender, MouseButtonEventArgs e)
@@ -135,7 +132,8 @@ namespace PaintBox3000
 
 		private void OnCloseSidebar(object sender, RoutedEventArgs e)
 		{
-			SideBar.Visibility = Visibility.Collapsed;
+			//SideBar.Visibility = Visibility.Collapsed;
+			MainGrid.ColumnDefinitions[3].Width = new GridLength(0);
 		}
 
 		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -150,18 +148,21 @@ namespace PaintBox3000
 			activeStroke = ToBrush(pi);
 			UpdateStatBar(LblSBStrokeColor, pi);
 		}
-
 		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (fillColorList.SelectedItem is not PropertyInfo pi) return;
 			activeFill = ToBrush(pi);
 			UpdateStatBar(LblSBFillColor, pi);
 		}
-
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			Canvas.Width = Canvas.ActualWidth;
-			Canvas.Height = Canvas.ActualHeight;
+			Canvas.MinWidth = Canvas.ActualWidth;
+			Canvas.MinHeight = Canvas.ActualHeight;
 		}
+
+		//private void OnSetColor(object sender, RoutedEventArgs e)
+		//{
+		//	OpenSideBar(activeTool);
+		//}
 	}
 }

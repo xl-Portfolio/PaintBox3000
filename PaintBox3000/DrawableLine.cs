@@ -32,7 +32,10 @@ namespace PaintBox3000
 			_line.X2 = p.X;
 			_line.Y2 = p.Y;
 		}
-
+		public override Point BottomRight => new(
+			Math.Max(_line.X1, _line.X2),
+			Math.Max(_line.Y1, _line.Y2)
+		);
 
 	}
 }

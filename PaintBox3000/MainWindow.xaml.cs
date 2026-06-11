@@ -34,7 +34,7 @@ namespace PaintBox3000
 			InitializeSideBar();
 			activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
 			activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
-			BtnLine.IsChecked = true;
+
 			BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
 		}
 		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
@@ -56,34 +56,42 @@ namespace PaintBox3000
 		}
 		private void OpenSideBar(ToolMode tool)
 		{
-			MainGrid.ColumnDefinitions[3].Width = new GridLength(250);
-			//SideBar.Visibility = Visibility.Visible;
+			SideBar.Visibility = Visibility.Visible;
 			SideBarHeader.Content = $"{tool.ToString().ToLower()} settings";
 		}
 		
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
+			BtnLine.IsChecked = true;
 			activeTool = ToolMode.Line;
+			OpenSideBar(activeTool);
 			UpdateStatBar(LblSBTool, activeTool);
 		}
 		private void OnPaintEllipse(object sender, RoutedEventArgs e)
 		{
+			BtnEllipse.IsChecked = true;
 			activeTool = ToolMode.Ellipse;
+			OpenSideBar(activeTool);
 			UpdateStatBar(LblSBTool, activeTool);
 		}
 		private void OnPaintRectangle(object sender, RoutedEventArgs e)
 		{
+			BtnRectangle.IsChecked = true;
 			activeTool = ToolMode.Rectangle;
+			OpenSideBar(activeTool);
 			UpdateStatBar(LblSBTool, activeTool);
 		}
 		private void OnPaintFreehand(object sender, RoutedEventArgs e)
 		{
+			BtnFreehand.IsChecked = true;
 			activeTool = ToolMode.Freehand;
+			OpenSideBar(activeTool);
 			UpdateStatBar(LblSBTool, activeTool);
 		}
 
 		private void OnPressed(object sender, MouseButtonEventArgs e)
 		{
+			actualCanvas.CaptureMouse();
 			this.Cursor = Cursors.Cross;
 			activeShape = activeTool switch
 			{
@@ -93,33 +101,41 @@ namespace PaintBox3000
 				ToolMode.Freehand => new DrawableFreehand(activeStroke),
 				_ => throw new NotImplementedException()
 			};
-			activeShape.SetStart(e.GetPosition(Canvas));
+			activeShape.SetStart(e.GetPosition(actualCanvas));
 
 			if (activeShape.Visual == null) return;
-			Canvas.Children.Add(activeShape.Visual);
-			_history.Push(activeShape.Visual);
+			actualCanvas.Children.Add(activeShape.Visual);
 		}
 		private void OnMoved(object sender, MouseEventArgs e)
 		{
-			activeShape?.SetSize(e.GetPosition(Canvas));
+			activeShape?.SetSize(e.GetPosition(actualCanvas));
 		}
 
 		private void OnReleased(object sender, MouseButtonEventArgs e)
 		{
+			actualCanvas.ReleaseMouseCapture();
 			this.Cursor = cursor;
+			if (activeShape?.Visual != null)
+			{
+				_history.Push(activeShape.Visual);
+				Point br = activeShape.BottomRight;
+				if (br.X > actualCanvas.MinWidth) actualCanvas.MinWidth = br.X;
+				if (br.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = br.Y;
+			}
+
 			activeShape = null;
 		}
 
 		private void OnClickClear(object sender, RoutedEventArgs e)
 		{
-			Canvas.Children.Clear();
+			actualCanvas.Children.Clear();
 		}
 		private void OnClickUndo(object sender, RoutedEventArgs e)
 		{
 			if (_history.Count == 0) return;
 			var stackItem = _history.Pop();
 			_undoHistory.Push(stackItem);
-			Canvas.Children.Remove(stackItem);
+			actualCanvas.Children.Remove(stackItem);
 			
 		}
 		private void OnClickRedo(object sender, RoutedEventArgs e)
@@ -127,13 +143,7 @@ namespace PaintBox3000
 			if (_undoHistory.Count == 0) return;
 				var stackItem = _undoHistory.Pop();
 				_history.Push(stackItem);
-				Canvas.Children.Add(stackItem);
-		}
-
-		private void OnCloseSidebar(object sender, RoutedEventArgs e)
-		{
-			//SideBar.Visibility = Visibility.Collapsed;
-			MainGrid.ColumnDefinitions[3].Width = new GridLength(0);
+				actualCanvas.Children.Add(stackItem);
 		}
 
 		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -141,7 +151,6 @@ namespace PaintBox3000
 			//if (xxx == null) return;
 			return;
 		}
-
 		private void OnStrokeColorChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (strokeColorList.SelectedItem is not PropertyInfo pi) return;
@@ -156,8 +165,26 @@ namespace PaintBox3000
 		}
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			Canvas.MinWidth = Canvas.ActualWidth;
-			Canvas.MinHeight = Canvas.ActualHeight;
+			actualCanvas.MinWidth = actualCanvas.ActualWidth;
+			actualCanvas.MinHeight = actualCanvas.ActualHeight;
+		}
+		private void OnCloseSidebar(object sender, RoutedEventArgs e)
+		{
+			SideBar.Visibility = Visibility.Collapsed;
+		}
+		private void OnSideBarVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (SideBar.Visibility == Visibility.Visible)
+			{
+				MainGrid.ColumnDefinitions[3].Width = new GridLength(250);
+				Splitter.IsEnabled = true;
+			}
+			if (SideBar.Visibility == Visibility.Collapsed)
+			{
+				MainGrid.ColumnDefinitions[3].Width = new GridLength(0);
+				Splitter.IsEnabled = false;
+			}
+			
 		}
 
 		//private void OnSetColor(object sender, RoutedEventArgs e)

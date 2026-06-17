@@ -37,6 +37,9 @@ namespace PaintBox3000
 			Visual.Width = Math.Abs(p.X - PointStart.X);
 			Visual.Height = Math.Abs(p.Y - PointStart.Y);
 		}
-
+		public virtual Point BottomRight => new(
+			Canvas.GetLeft(Visual) + (Visual?.Width ?? 0),
+			Canvas.GetTop(Visual) + (Visual?.Height ?? 0)
+		);
 	}
 }

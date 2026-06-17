@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PaintBox3000
 {
+    //soll sidebars entsprechend meiner drawables erstellen
     class SideBarFactory
     {
     }

@@ -187,9 +187,9 @@ namespace PaintBox3000
 			
 		}
 
-		//private void OnSetColor(object sender, RoutedEventArgs e)
-		//{
-		//	OpenSideBar(activeTool);
-		//}
-	}
+        //private void OnSetColor(object sender, RoutedEventArgs e)
+        //{
+        //	OpenSideBar(activeTool);
+        //}
+    }
 }

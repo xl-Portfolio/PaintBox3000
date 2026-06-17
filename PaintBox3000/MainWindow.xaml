@@ -13,9 +13,10 @@
         <SolidColorBrush x:Key="BaGr1" Color="Black"/>
         <SolidColorBrush x:Key="FoGr1" Color="White"/>
         <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
-        <sys:Double x:Key="FontSize1">12</sys:Double>
+        <sys:Double x:Key="FontSize1">10</sys:Double>
         <sys:Double x:Key="Fontsize2">8</sys:Double>
         <FontStretch x:Key="Stretch1">Expanded</FontStretch>
+        <sys:Double x:Key="ButtonSize">25</sys:Double>
 
         <Style x:Key="BaseStyle" TargetType="Control">
             <Setter Property="Background" Value="{StaticResource BaGr1}"/>
@@ -25,12 +26,16 @@
             <Setter Property="FontStretch" Value="{StaticResource Stretch1}"/>
         </Style>
         <Style x:Key="ToolBarStyle" TargetType="Control" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSize1}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style TargetType="Menu" BasedOn="{StaticResource BaseStyle}"/>
-        <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}"/>
-        <Style TargetType="ToolBar" BasedOn="{StaticResource ToolBarStyle}"/>
+        <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+        </Style>
+        <Style TargetType="ToolBar" BasedOn="{StaticResource ToolBarStyle}">
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
         <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
         <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
             <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
@@ -93,11 +98,25 @@
             <ToolBarTray Background="{StaticResource BaGr1}" MinHeight="20">
                 <ToolBar x:Name="ToolBarUndo">
                     <ToolBar.Resources>
-                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}">
+                            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+                        </Style>
                     </ToolBar.Resources>
-                    <Button x:Name="ClearBtn" Content="Clear" Click="OnClickClear"/>
-                    <Button x:Name="UndoBtn" Content="Undo" Click="OnClickUndo"/>
-                    <Button x:Name="RedoBtn" Content="Redo" Click="OnClickRedo"/>
+                    <Button x:Name="ClearBtn" ToolTip="Clear Canvas" Click="OnClickClear">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/trash.png"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="UndoBtn" ToolTip="Undo" Click="OnClickUndo">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/undo.png"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="RedoBtn" ToolTip="Redo" Click="OnClickRedo">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/redo.png"/>
+                        </Button.Content>
+                    </Button>
                 </ToolBar>
                 <ToolBar x:Name="ToolBarShapes">
                     <ToolBar.Resources>
@@ -120,7 +139,7 @@
 
                 <ToolBar x:Name="ToolBarColors">
                     <ToolBar.Resources>
-                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource ToolBarStyle}"/>
                     </ToolBar.Resources>
                     <Grid>
                         <Grid.ColumnDefinitions>

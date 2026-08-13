@@ -90,8 +90,9 @@
         <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Orientation="Vertical">
             <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Open"/>
-                    <MenuItem Header="_Save"/>
+                    <MenuItem Header="_Open" Click="OnOpen"/>
+                    <MenuItem Header="_Save" Click="OnSave"/>
+                    <MenuItem Header="_Close" Click="OnClose"/>
                 </MenuItem>
                 <MenuItem Header="_Edit"/>
             </Menu>
@@ -164,7 +165,8 @@
         <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaGr1}"/>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Canvas x:Name="actualCanvas" Width="1250" ClipToBounds="False" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" MouseLeftButtonUp="OnReleased"/>
+            <Canvas x:Name="actualCanvas" Width="1250" ClipToBounds="False" Background="White" MouseLeftButtonDown="OnPressed" 
+                    MouseMove="OnMoved" MouseLeftButtonUp="OnReleased" AllowDrop="True" Drop="OnDrop"/>
         </ScrollViewer>
 
         <GridSplitter x:Name="Splitter" Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaGr1}"/>

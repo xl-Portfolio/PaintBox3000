@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace PaintBox3000
 {
@@ -59,7 +60,102 @@ namespace PaintBox3000
 			SideBar.Visibility = Visibility.Visible;
 			SideBarHeader.Content = $"{tool.ToString().ToLower()} settings";
 		}
-		
+        private void DisplayErrorMessage()
+        {
+            MessageBox.Show("Fehler: Datei konnte nicht geladen werden");
+        }
+        private void DisplayImage(string uriString)
+        {
+            try
+            {
+                Uri uri = new(uriString); //exception, falls Datenpfad nicht vorhanden
+
+                BitmapImage bmp = new(); //exception, falls kein gültiges Bildformat
+                bmp.BeginInit();
+                bmp.UriSource = uri;
+                bmp.CacheOption = BitmapCacheOption.OnLoad; //lädt und decodiert präventiv
+                bmp.EndInit();
+
+                Image image = new()
+                {
+                    Source = bmp,
+                    Width = bmp.PixelWidth,
+                    Height = bmp.PixelHeight,
+                    Stretch = Stretch.Uniform
+                };
+
+                Canvas.SetLeft(image, 0);
+                Canvas.SetTop(image, 0);
+
+                actualCanvas.Children.Add(image);
+
+                _history.Push(image);
+
+            }
+            catch { DisplayErrorMessage(); }
+        }
+        private void OnOpen(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new()
+            {
+                DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Title = "Bild öffnen",
+                Filter = "Imagefiles|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+                DisplayImage(openFileDialog.FileName);
+        }
+        private void OnDrop(object sender, DragEventArgs e) //Nimmt Drops entgegen und übergibt an Display-Methode
+        {
+            string[]? files = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+            if (files != null && files.Length > 0) //exception, falls keine Dateien übergeben wurden
+            {
+                DisplayImage(files[0]);
+            }
+            else { DisplayErrorMessage(); }
+
+        }
+        private void OnClose(object sender, RoutedEventArgs e) => Close();
+		private void OnSave(object sender, RoutedEventArgs e)
+		{
+            SaveFileDialog saveFileDialog = new()
+            {
+                DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Title = "Bild speichern",
+                Filter = "PNG-Datei|*.png|JPEG-Datei|*.jpg|Bitmap-Datei|*.bmp",
+                DefaultExt = ".png",
+                FileName = "PaintBox3000"
+            };
+
+            if (saveFileDialog.ShowDialog() != true) return;
+
+            try
+            {
+                int width = (int)actualCanvas.ActualWidth;
+                int height = (int)actualCanvas.ActualHeight;
+
+                RenderTargetBitmap renderBitmap = new(width, height, 96, 96, PixelFormats.Pbgra32);
+                renderBitmap.Render(actualCanvas);
+
+                BitmapEncoder encoder = System.IO.Path.GetExtension(saveFileDialog.FileName).ToLower() switch
+                {
+                    ".jpg" or ".jpeg" => new JpegBitmapEncoder(),
+                    ".bmp" => new BmpBitmapEncoder(),
+                    _ => new PngBitmapEncoder()
+                };
+                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+                using System.IO.FileStream stream = new(saveFileDialog.FileName, System.IO.FileMode.Create);
+                encoder.Save(stream);
+            }
+            catch
+            {
+                DisplayErrorMessage();
+            }
+        }
+
 		private void OnPaintLine(object sender, RoutedEventArgs e)
 		{
 			BtnLine.IsChecked = true;

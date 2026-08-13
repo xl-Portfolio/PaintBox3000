@@ -1,0 +1,252 @@
+﻿<Window x:Class="PaintBox3000.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PaintBox3000"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="PaintBox3000" Height="720" Width="1280"
+        Loaded="OnLoaded">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="BaGr1" Color="Black"/>
+        <SolidColorBrush x:Key="FoGr1" Color="White"/>
+        <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
+        <sys:Double x:Key="FontSize1">10</sys:Double>
+        <sys:Double x:Key="Fontsize2">8</sys:Double>
+        <FontStretch x:Key="Stretch1">Expanded</FontStretch>
+        <sys:Double x:Key="ButtonSize">25</sys:Double>
+
+        <Style x:Key="BaseStyle" TargetType="Control">
+            <Setter Property="Background" Value="{StaticResource BaGr1}"/>
+            <Setter Property="Foreground" Value="{StaticResource FoGr1}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Font1}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSize1}"/>
+            <Setter Property="FontStretch" Value="{StaticResource Stretch1}"/>
+        </Style>
+        <Style x:Key="ToolBarStyle" TargetType="Control" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="FontSize" Value="{StaticResource FontSize1}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Menu" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+        </Style>
+        <Style TargetType="ToolBar" BasedOn="{StaticResource ToolBarStyle}">
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
+        <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
+        </Style>
+        <Style x:Key="LblToolBar" TargetType="Label" BasedOn="{StaticResource ToolBarStyle}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+        <Style TargetType="TabPanel" BasedOn="{StaticResource BaseStyle}"/>
+        <Style x:Key="ToolBarRadio" TargetType="RadioButton" BasedOn="{StaticResource ToolBarStyle}">
+            <Setter Property="GroupName" Value="Tools"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BaGr1}"/>
+                    <Setter Property="Foreground" Value="{StaticResource FoGr1}"/>
+                    <Setter Property="BorderBrush" Value="DarkGray"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD0E8F8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="MainGrid" ClipToBounds="False">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="MenuToolbarRow" Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition x:Name="StatusBarRow" Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="Border1Col" Width="Auto"/>
+            <ColumnDefinition x:Name="CanvasCol" Width="*"/>
+            <ColumnDefinition x:Name="SplitterCol" Width="Auto"/>
+            <ColumnDefinition x:Name="SiedeBarCol" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Orientation="Vertical">
+            <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open"/>
+                    <MenuItem Header="_Save"/>
+                </MenuItem>
+                <MenuItem Header="_Edit"/>
+            </Menu>
+            <ToolBarTray Background="{StaticResource BaGr1}" MinHeight="20">
+                <ToolBar x:Name="ToolBarUndo">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}">
+                            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+                        </Style>
+                    </ToolBar.Resources>
+                    <Button x:Name="ClearBtn" ToolTip="Clear Canvas" Click="OnClickClear">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/trash.png"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="UndoBtn" ToolTip="Undo" Click="OnClickUndo">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/undo.png"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="RedoBtn" ToolTip="Redo" Click="OnClickRedo">
+                        <Button.Content>
+                            <Image Source="/PaintBox3000;component/icons/redo.png"/>
+                        </Button.Content>
+                    </Button>
+                </ToolBar>
+                <ToolBar x:Name="ToolBarShapes">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
+                    </ToolBar.Resources>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="tools" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource LblToolBar}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <RadioButton x:Name="BtnFreehand" Content="Freehand" GroupName="tools" Click="OnPaintFreehand" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnLine" Content="Line" GroupName="tools" Click="OnPaintLine" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnRectangle" Content="Rectangle" GroupName="tools" Click="OnPaintRectangle" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnEllipse" Content="Ellipse" GroupName="tools" Click="OnPaintEllipse" Style="{StaticResource ToolBarRadio}"/>
+                        </StackPanel>
+                    </Grid>
+                </ToolBar>
+
+                <ToolBar x:Name="ToolBarColors">
+                    <ToolBar.Resources>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource ToolBarStyle}"/>
+                    </ToolBar.Resources>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="color history" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ToolBarStyle}"/>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                            <Label Content="S" Style="{StaticResource LblToolBar}"/>
+                            <ComboBox Width="17" Height="17" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2">
+                            <Label Content="F"  Style="{StaticResource LblToolBar}"/>
+                            <ComboBox Width="17" Height="17" />
+                        </StackPanel>
+                    </Grid>
+                </ToolBar>
+            </ToolBarTray>
+        </StackPanel>
+
+        <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaGr1}"/>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas x:Name="actualCanvas" Width="1250" ClipToBounds="False" Background="White" MouseLeftButtonDown="OnPressed" MouseMove="OnMoved" MouseLeftButtonUp="OnReleased"/>
+        </ScrollViewer>
+
+        <GridSplitter x:Name="Splitter" Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaGr1}"/>
+        <DockPanel x:Name="SideBar" Grid.Row="1" Grid.Column="3" IsVisibleChanged="OnSideBarVisibilityChanged">
+            <Grid DockPanel.Dock="Top" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="SideBarTop" Grid.ColumnSpan="2" Height="25" Background="{StaticResource BaGr1}"/>
+                <Label x:Name="SideBarHeader" Grid.Column="0" HorizontalAlignment="Left" Content="settings" Style="{StaticResource LblToolBar}"/>
+                <Button x:Name="BtnCloseSideBar" Grid.Column="1" HorizontalAlignment="Right" Height="15" Width="15" Background="White" Foreground="Black" Content="✕" 
+                        Padding="1,1,1,1" Margin="3" FontSize="{StaticResource Fontsize2}" FontWeight="Bold" Click="OnCloseSidebar"/>
+            </Grid>
+            <Grid x:Name="BrushConfig" DockPanel.Dock="Right" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Vertical" Grid.Row="0" Margin="0,0,0,5" >
+                    <Label Content="stroke" Padding="2,2,2,0"/>
+                    <Label Content="pt" HorizontalAlignment="Center" Padding="2,0,2,2" Target="{Binding ElementName=brushSlider}"/>
+                </StackPanel>
+                <Slider x:Name="brushSlider" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" 
+                        TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
+                        AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
+                <StackPanel Orientation="Vertical" Grid.Row="2"  Margin="0,5,0,5">
+                    <Label Content="tip" HorizontalAlignment="Center" Target="{Binding ElementName=brushForm}"/>
+                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" >r</RadioButton>
+                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" >s</RadioButton>
+                </StackPanel>
+            </Grid>
+
+            <TabControl>
+                <TabItem Header="Stroke">
+                    <ListBox x:Name="strokeColorList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                            ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnStrokeColorChanged">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+
+                <TabItem Header="Fill">
+                    <ListBox x:Name="fillColorList" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                            ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnFillColorChanged">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=MemberType}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+
+        <StatusBar x:Name="StatusBar" Grid.Row="2" Grid.ColumnSpan="4" Height="25" Margin="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
+                <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
+                <Label x:Name="LblStatStrokeThickness" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="3p" Margin="0,0,50,0" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
+                <Label x:Name="LblSBStrokeColor" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>
+                <Label x:Name="LblSBFillColor" Style="{StaticResource LblStatusBar}"/>
+            </StackPanel>
+        </StatusBar>
+    </Grid>
+</Window>
+

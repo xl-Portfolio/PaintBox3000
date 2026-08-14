@@ -193,7 +193,7 @@
                 </StackPanel>
                 <Slider x:Name="brushSlider" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" 
                         TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
-                        AutoToolTipPlacement="TopLeft" Value="3" ValueChanged="OnBrushSizeChanged"/>
+                        AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
                 <StackPanel Orientation="Vertical" Grid.Row="2"  Margin="0,5,0,5">
                     <Label Content="tip" HorizontalAlignment="Center"/>
                     <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" Checked="OnBrushShapeChanged">r</RadioButton>
@@ -240,8 +240,8 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
                 <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
-                <Label x:Name="LblStatStrokeThickness" Style="{StaticResource LblStatusBar}"/>
-                <Label Content="3p" Margin="0,0,50,0" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="size:" Style="{StaticResource LblStatusBar}"/>
+                <Label x:Name="LblStatStrokeThickness" Style="{StaticResource LblStatusBar}" Margin="0,0,50,0" />
                 <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
                 <Label x:Name="LblSBStrokeColor" Style="{StaticResource LblStatusBar}"/>
                 <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>

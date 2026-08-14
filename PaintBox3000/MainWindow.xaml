@@ -94,7 +94,6 @@
                     <MenuItem Header="_Save" Click="OnSave"/>
                     <MenuItem Header="_Close" Click="OnClose"/>
                 </MenuItem>
-                <MenuItem Header="_Edit"/>
             </Menu>
             <ToolBarTray Background="{StaticResource BaGr1}" MinHeight="20">
                 <ToolBar x:Name="ToolBarUndo">
@@ -194,11 +193,11 @@
                 </StackPanel>
                 <Slider x:Name="brushSlider" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" 
                         TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
-                        AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
+                        AutoToolTipPlacement="TopLeft" Value="3" ValueChanged="OnBrushSizeChanged"/>
                 <StackPanel Orientation="Vertical" Grid.Row="2"  Margin="0,5,0,5">
-                    <Label Content="tip" HorizontalAlignment="Center" Target="{Binding ElementName=brushForm}"/>
-                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" >r</RadioButton>
-                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" >s</RadioButton>
+                    <Label Content="tip" HorizontalAlignment="Center"/>
+                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" Checked="OnBrushShapeChanged">r</RadioButton>
+                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" Checked="OnBrushShapeChanged">s</RadioButton>
                 </StackPanel>
             </Grid>
 

@@ -11,7 +11,7 @@ namespace PaintBox3000
 		private readonly Rectangle _rectangle;
 		public override Shape? Visual => _rectangle;
 
-		public DrawableRectangle(Brush stroke, Brush? fill) : base(stroke)
+		public DrawableRectangle(Brush stroke, double strokeThickness, Brush? fill) : base(stroke, strokeThickness)
 		{
 			_rectangle = new();
 			_rectangle.Fill = fill;

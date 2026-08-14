@@ -1,32 +1,27 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Reflection;
 using Microsoft.Win32;
+using PaintBox3000.Enums;
+using PaintBox3000.Drawables;
 
 namespace PaintBox3000
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public enum ToolMode { Ellipse, Rectangle, Line, Freehand }
-    public enum BrushTip { Round, Square }
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
 	{
 		private Cursor cursor;
 		private ToolMode activeTool;
-		private Drawables? activeShape;
+		private AbstractDrawable? activeShape;
 		private SolidColorBrush activeFill;
 		private SolidColorBrush activeStroke;
 		private double activeBrushSize;
-		private BrushTip activeBrushTip = BrushTip.Round;
+		private BrushTip activeBrushTip;
 
 		private Stack<UIElement> _history = new();
 		private Stack<UIElement>? _undoHistory = new();
@@ -36,14 +31,15 @@ namespace PaintBox3000
 			InitializeComponent();
 			cursor = this.Cursor;
 			InitializeSideBar();
-			activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
-			activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
+			//activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
+			//activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
 
 			BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
 		}
 		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
 		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLower();
-		private static SolidColorBrush ToBrush(PropertyInfo pi) => new((Color)pi.GetValue(null, null)!);
+        private static void UpdateStatBar(Label label, double brushSize) => label.Content = $"{(int)brushSize}pt";
+        private static SolidColorBrush ToBrush(PropertyInfo pi) => new((Color)pi.GetValue(null, null)!);
 
 		private void InitializeSideBar()
 		{
@@ -57,7 +53,10 @@ namespace PaintBox3000
 			fillColorList.SelectedIndex = 0;
 			strokeColorList.ItemsSource = propertyInfosColor;
 			strokeColorList.SelectedIndex = propertyInfosColor.Length - 1;
-		}
+
+            brushSlider.Value = 3;
+            radioRound.IsChecked = true;
+        }
 		private void OpenSideBar(ToolMode tool)
 		{
 			SideBar.Visibility = Visibility.Visible;
@@ -193,10 +192,10 @@ namespace PaintBox3000
 			this.Cursor = Cursors.Cross;
 			activeShape = activeTool switch
 			{
-				ToolMode.Line => new DrawableLine(activeStroke, activeBrushSize),
+				ToolMode.Line => new DrawableLine(activeStroke, activeBrushSize, activeBrushTip),
 				ToolMode.Ellipse => new DrawableEllipse(activeStroke, activeBrushSize, activeFill),
 				ToolMode.Rectangle => new DrawableRectangle(activeStroke, activeBrushSize, activeFill),
-				ToolMode.Freehand => new DrawableFreehand(activeStroke, activeBrushSize),
+				ToolMode.Freehand => new DrawableFreehand(activeStroke, activeBrushSize, activeBrushTip),
 				_ => throw new NotImplementedException()
 			};
 			activeShape.SetStart(e.GetPosition(actualCanvas));
@@ -220,7 +219,6 @@ namespace PaintBox3000
 				if (br.X > actualCanvas.MinWidth) actualCanvas.MinWidth = br.X;
 				if (br.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = br.Y;
 			}
-
 			activeShape = null;
 		}
 
@@ -247,7 +245,7 @@ namespace PaintBox3000
 		{
             activeBrushSize = e.NewValue;
             if (LblStatStrokeThickness == null) return;
-            LblStatStrokeThickness.Content = $"{(int)activeBrushSize}pt";
+            UpdateStatBar(LblStatStrokeThickness, activeBrushSize);
         }
 		private void OnBrushShapeChanged(object sender, RoutedEventArgs e)
 		{
@@ -289,10 +287,5 @@ namespace PaintBox3000
 			}
 			
 		}
-
-        //private void OnSetColor(object sender, RoutedEventArgs e)
-        //{
-        //	OpenSideBar(activeTool);
-        //}
     }
 }

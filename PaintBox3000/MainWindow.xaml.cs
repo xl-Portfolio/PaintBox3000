@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.Win32;
 using PaintBox3000.Enums;
 using PaintBox3000.Drawables;
+using System.Collections.ObjectModel;
 
 namespace PaintBox3000
 {
@@ -26,15 +27,16 @@ namespace PaintBox3000
 		private Stack<UIElement> _history = new();
 		private Stack<UIElement>? _undoHistory = new();
 
-		public MainWindow()
+        private ObservableCollection<SolidColorBrush> strokeColorHistory = new();
+        private ObservableCollection<SolidColorBrush> fillColorHistory = new();
+
+        public MainWindow()
 		{
 			InitializeComponent();
 			cursor = this.Cursor;
 			InitializeSideBar();
-			//activeStroke = ToBrush((PropertyInfo)strokeColorList.SelectedItem);
-			//activeFill = ToBrush((PropertyInfo)fillColorList.SelectedItem);
 
-			BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
+            BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
 		}
 		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
 		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLower();
@@ -95,6 +97,13 @@ namespace PaintBox3000
 
             }
             catch { DisplayErrorMessage(); }
+        }
+		public static void AddToColorHistory(ObservableCollection<SolidColorBrush> history, SolidColorBrush brush, ComboBox box)
+		{
+            if (history.Any(b => b.Color == brush.Color)) return;
+            history.Insert(0, brush);
+            box.SelectedIndex = 0;
+            if (history.Count > 10) history.RemoveAt(history.Count - 1);
         }
         private void OnOpen(object sender, RoutedEventArgs e)
         {
@@ -202,7 +211,7 @@ namespace PaintBox3000
 
 			if (activeShape.Visual == null) return;
 			actualCanvas.Children.Add(activeShape.Visual);
-		}
+        }
 		private void OnMoved(object sender, MouseEventArgs e)
 		{
 			activeShape?.SetSize(e.GetPosition(actualCanvas));
@@ -218,9 +227,13 @@ namespace PaintBox3000
 				Point br = activeShape.BottomRight;
 				if (br.X > actualCanvas.MinWidth) actualCanvas.MinWidth = br.X;
 				if (br.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = br.Y;
-			}
+
+                AddToColorHistory(strokeColorHistory, activeStroke, strokeHistoryCombo);
+                if (activeTool is ToolMode.Ellipse or ToolMode.Rectangle)
+                    AddToColorHistory(fillColorHistory, activeFill, fillHistoryCombo);
+            }
 			activeShape = null;
-		}
+        }
 
 		private void OnClickClear(object sender, RoutedEventArgs e)
 		{
@@ -268,6 +281,9 @@ namespace PaintBox3000
 		{
 			actualCanvas.MinWidth = actualCanvas.ActualWidth;
 			actualCanvas.MinHeight = actualCanvas.ActualHeight;
+
+            strokeHistoryCombo.ItemsSource = strokeColorHistory;			
+			fillHistoryCombo.ItemsSource = fillColorHistory;
 		}
 		private void OnCloseSidebar(object sender, RoutedEventArgs e)
 		{
@@ -286,6 +302,14 @@ namespace PaintBox3000
 				Splitter.IsEnabled = false;
 			}
 			
+		}
+		private void OnStrokeHistorySelected(object sender, RoutedEventArgs e)
+		{
+			return;
+		}
+		private void OnFillHistorySelected(object sender, RoutedEventArgs e)
+		{
+			return;
 		}
     }
 }

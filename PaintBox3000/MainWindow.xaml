@@ -150,11 +150,23 @@
                         <Button Content="color history" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ToolBarStyle}"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <Label Content="S" Style="{StaticResource LblToolBar}"/>
-                            <ComboBox Width="17" Height="17" />
+                            <ComboBox x:Name="strokeHistoryCombo" Width="50" Height="25"  SelectionChanged="OnStrokeHistorySelected">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Rectangle Fill="{Binding}" Width="17" Height="17"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="2">
                             <Label Content="F"  Style="{StaticResource LblToolBar}"/>
-                            <ComboBox Width="17" Height="17" />
+                            <ComboBox x:Name="fillHistoryCombo" Width="50" Height="25" SelectionChanged="OnFillHistorySelected">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Rectangle Fill="{Binding}" Width="17" Height="17"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                     </Grid>
                 </ToolBar>

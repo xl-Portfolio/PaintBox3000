@@ -11,7 +11,7 @@ namespace PaintBox3000
 		private readonly Ellipse _ellipse;
 		public override Shape? Visual => _ellipse;
 
-		public DrawableEllipse(Brush stroke, Brush? fill) : base(stroke)
+		public DrawableEllipse(Brush stroke, double strokeThickness, Brush? fill) : base(stroke, strokeThickness)
 		{
 			_ellipse = new()
 			{

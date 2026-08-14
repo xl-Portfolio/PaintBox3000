@@ -8,22 +8,22 @@ namespace PaintBox3000
 {
 	public abstract class Drawables : IDrawable
 	{
-		private Brush? stroke;
-		private double strokeThickness = 3;
+		private Brush? _stroke;
+		private double _strokeThickness;
 		private Point PointStart { get; set; }
 		public abstract Shape? Visual { get; }
 
-		protected Drawables(Brush stroke)
+		protected Drawables(Brush stroke, double strokeThickness)
 		{
-			this.stroke = stroke;
-			this.strokeThickness = 3;
+			_stroke = stroke;
+			_strokeThickness = strokeThickness;
 		}
 		protected void ApplyStrokeToVisual()
 		{
 			if (Visual != null)
 			{
-				Visual.Stroke = stroke;
-				Visual.StrokeThickness = strokeThickness;
+				Visual.Stroke = _stroke;
+				Visual.StrokeThickness = _strokeThickness;
 			}
 		}
 		public virtual void SetStart(Point p)

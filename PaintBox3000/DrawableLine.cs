@@ -14,7 +14,7 @@ namespace PaintBox3000
 	{
 		private readonly Line _line;
 		public override Shape? Visual => _line;
-		public DrawableLine(Brush stroke) : base(stroke)
+		public DrawableLine(Brush stroke, double strokeThickness) : base(stroke, strokeThickness)
 		{
 			_line = new();
 			ApplyStrokeToVisual();

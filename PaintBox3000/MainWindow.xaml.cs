@@ -17,13 +17,16 @@ namespace PaintBox3000
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public enum ToolMode { Ellipse, Rectangle, Line, Freehand }
-	public partial class MainWindow : Window
+    public enum BrushTip { Round, Square }
+    public partial class MainWindow : Window
 	{
 		private Cursor cursor;
 		private ToolMode activeTool;
 		private Drawables? activeShape;
 		private SolidColorBrush activeFill;
 		private SolidColorBrush activeStroke;
+		private double activeBrushSize;
+		private BrushTip activeBrushTip = BrushTip.Round;
 
 		private Stack<UIElement> _history = new();
 		private Stack<UIElement>? _undoHistory = new();
@@ -106,11 +109,11 @@ namespace PaintBox3000
             if (openFileDialog.ShowDialog() == true)
                 DisplayImage(openFileDialog.FileName);
         }
-        private void OnDrop(object sender, DragEventArgs e) //Nimmt Drops entgegen und übergibt an Display-Methode
+        private void OnDrop(object sender, DragEventArgs e) 
         {
             string[]? files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            if (files != null && files.Length > 0) //exception, falls keine Dateien übergeben wurden
+            if (files != null && files.Length > 0) 
             {
                 DisplayImage(files[0]);
             }
@@ -184,17 +187,16 @@ namespace PaintBox3000
 			OpenSideBar(activeTool);
 			UpdateStatBar(LblSBTool, activeTool);
 		}
-
 		private void OnPressed(object sender, MouseButtonEventArgs e)
 		{
 			actualCanvas.CaptureMouse();
 			this.Cursor = Cursors.Cross;
 			activeShape = activeTool switch
 			{
-				ToolMode.Line => new DrawableLine(activeStroke),
-				ToolMode.Ellipse => new DrawableEllipse(activeStroke, activeFill),
-				ToolMode.Rectangle => new DrawableRectangle(activeStroke, activeFill),
-				ToolMode.Freehand => new DrawableFreehand(activeStroke),
+				ToolMode.Line => new DrawableLine(activeStroke, activeBrushSize),
+				ToolMode.Ellipse => new DrawableEllipse(activeStroke, activeBrushSize, activeFill),
+				ToolMode.Rectangle => new DrawableRectangle(activeStroke, activeBrushSize, activeFill),
+				ToolMode.Freehand => new DrawableFreehand(activeStroke, activeBrushSize),
 				_ => throw new NotImplementedException()
 			};
 			activeShape.SetStart(e.GetPosition(actualCanvas));
@@ -241,12 +243,17 @@ namespace PaintBox3000
 				_history.Push(stackItem);
 				actualCanvas.Children.Add(stackItem);
 		}
-
 		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			//if (xxx == null) return;
-			return;
-		}
+            activeBrushSize = e.NewValue;
+            if (LblStatStrokeThickness == null) return;
+            LblStatStrokeThickness.Content = $"{(int)activeBrushSize}pt";
+        }
+		private void OnBrushShapeChanged(object sender, RoutedEventArgs e)
+		{
+            if (sender == radioRound) activeBrushTip = BrushTip.Round;
+            else if (sender == radioSquare) activeBrushTip = BrushTip.Square;
+        }
 		private void OnStrokeColorChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (strokeColorList.SelectedItem is not PropertyInfo pi) return;

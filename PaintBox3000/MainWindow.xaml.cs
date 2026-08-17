@@ -7,54 +7,52 @@ using System.Reflection;
 using Microsoft.Win32;
 using PaintBox3000.Enums;
 using PaintBox3000.Drawables;
-using System.Collections.ObjectModel;
+using PaintBox3000.Core;
 
 namespace PaintBox3000
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// orchestrates UI and functionality
     /// </summary>
     public partial class MainWindow : Window
 	{
-		private Cursor cursor;
-		private ToolMode activeTool;
-		private AbstractDrawable? activeShape;
-		private SolidColorBrush activeFill;
-		private SolidColorBrush activeStroke;
-		private double activeBrushSize;
-		private BrushTip activeBrushTip;
+		private Cursor _cursor;
+		private ToolMode _activeTool;
+		private AbstractDrawable? _activeShape;
+		private SolidColorBrush _activeFill;
+		private SolidColorBrush _activeStroke;
+		private double _activeBrushSize;
+		private BrushTip _activeBrushTip;
 
-		private Stack<UIElement> _history = new();
-		private Stack<UIElement>? _undoHistory = new();
-
-        private ObservableCollection<SolidColorBrush> strokeColorHistory = new();
-        private ObservableCollection<SolidColorBrush> fillColorHistory = new();
+        private readonly ImageFileService _imageFileService = new();
+        private readonly CanvasHistoryManager _historyManager = new();
+        private readonly ColorCatalog _colorCatalog = new();
+        private readonly ColorHistoryManager _colorHistoryManager = new();
 
         public MainWindow()
 		{
 			InitializeComponent();
-			cursor = this.Cursor;
+			_cursor = this.Cursor;
 			InitializeSideBar();
+
+            _activeFill = _colorCatalog.GetFirstColor();
+            _activeStroke = _colorCatalog.GetLastColor();
 
             BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
 		}
-		private static void UpdateStatBar(Label label, ToolMode? tool) => label.Content = tool.ToString().ToLower();
-		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLower();
+		private static void UpdateStatBar(Label label, ToolMode tool) => label.Content = tool.ToString().ToLowerInvariant();
+		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLowerInvariant();
         private static void UpdateStatBar(Label label, double brushSize) => label.Content = $"{(int)brushSize}pt";
-        private static SolidColorBrush ToBrush(PropertyInfo pi) => new((Color)pi.GetValue(null, null)!);
 
 		private void InitializeSideBar()
 		{
-			PropertyInfo[] propertyInfosColor = [.. typeof(Colors).GetProperties()
-				.OrderByDescending((currentColor) =>
-				{
-					Color c = (Color)currentColor.GetValue(null, null);
-					return c.R + c.G + c.B;
-				})];
-			fillColorList.ItemsSource = propertyInfosColor;
+            PropertyInfo[] colorProperties = _colorCatalog.SortedColors;
+
+            fillColorList.ItemsSource = colorProperties;
 			fillColorList.SelectedIndex = 0;
-			strokeColorList.ItemsSource = propertyInfosColor;
-			strokeColorList.SelectedIndex = propertyInfosColor.Length - 1;
+
+            strokeColorList.ItemsSource = colorProperties;
+			strokeColorList.SelectedIndex = colorProperties.Length - 1;
 
             brushSlider.Value = 3;
             radioRound.IsChecked = true;
@@ -66,19 +64,20 @@ namespace PaintBox3000
 		}
         private void DisplayErrorMessage()
         {
-            MessageBox.Show("Fehler: Datei konnte nicht geladen werden");
+            MessageBox.Show("Fehler: Datei konnte nicht gespeichert / geladen werden");
         }
-        private void DisplayImage(string uriString)
+        private void SelectTool(ToolMode tool, RadioButton button)
+        {
+            button.IsChecked = true;
+            _activeTool = tool;
+            OpenSideBar(_activeTool);
+            UpdateStatBar(LblSBTool, _activeTool);
+        }
+        private void DisplayImage(string path)
         {
             try
             {
-                Uri uri = new(uriString); //exception, falls Datenpfad nicht vorhanden
-
-                BitmapImage bmp = new(); //exception, falls kein gültiges Bildformat
-                bmp.BeginInit();
-                bmp.UriSource = uri;
-                bmp.CacheOption = BitmapCacheOption.OnLoad; //lädt und decodiert präventiv
-                bmp.EndInit();
+                BitmapImage bmp = _imageFileService.LoadImage(path);
 
                 Image image = new()
                 {
@@ -93,17 +92,20 @@ namespace PaintBox3000
 
                 actualCanvas.Children.Add(image);
 
-                _history.Push(image);
-
+                _historyManager.Push(image);
             }
-            catch { DisplayErrorMessage(); }
+            catch (Exception)
+            {
+                DisplayErrorMessage();
+            }
         }
-		public static void AddToColorHistory(ObservableCollection<SolidColorBrush> history, SolidColorBrush brush, ComboBox box)
-		{
-            if (history.Any(b => b.Color == brush.Color)) return;
-            history.Insert(0, brush);
-            box.SelectedIndex = 0;
-            if (history.Count > 10) history.RemoveAt(history.Count - 1);
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            actualCanvas.MinWidth = actualCanvas.ActualWidth;
+            actualCanvas.MinHeight = actualCanvas.ActualHeight;
+
+            strokeHistoryCombo.ItemsSource = _colorHistoryManager.StrokeHistory;
+            fillHistoryCombo.ItemsSource = _colorHistoryManager.FillHistory;
         }
         private void OnOpen(object sender, RoutedEventArgs e)
         {
@@ -121,11 +123,10 @@ namespace PaintBox3000
         {
             string[]? files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            if (files != null && files.Length > 0) 
-            {
+            if (files?.Length > 0)
                 DisplayImage(files[0]);
-            }
-            else { DisplayErrorMessage(); }
+            else
+                DisplayErrorMessage();
 
         }
         private void OnClose(object sender, RoutedEventArgs e) => Close();
@@ -144,146 +145,92 @@ namespace PaintBox3000
 
             try
             {
-                int width = (int)actualCanvas.ActualWidth;
-                int height = (int)actualCanvas.ActualHeight;
-
-                RenderTargetBitmap renderBitmap = new(width, height, 96, 96, PixelFormats.Pbgra32);
-                renderBitmap.Render(actualCanvas);
-
-                BitmapEncoder encoder = System.IO.Path.GetExtension(saveFileDialog.FileName).ToLower() switch
-                {
-                    ".jpg" or ".jpeg" => new JpegBitmapEncoder(),
-                    ".bmp" => new BmpBitmapEncoder(),
-                    _ => new PngBitmapEncoder()
-                };
-                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-
-                using System.IO.FileStream stream = new(saveFileDialog.FileName, System.IO.FileMode.Create);
-                encoder.Save(stream);
+                _imageFileService.SaveCanvas(actualCanvas, saveFileDialog.FileName);
             }
-            catch
+            catch (Exception)
             {
                 DisplayErrorMessage();
             }
         }
+        private void OnPaintLine(object sender, RoutedEventArgs e) => SelectTool(ToolMode.Line, BtnLine);
+        private void OnPaintEllipse(object sender, RoutedEventArgs e) => SelectTool(ToolMode.Ellipse, BtnEllipse);
+        private void OnPaintRectangle(object sender, RoutedEventArgs e) => SelectTool(ToolMode.Rectangle, BtnRectangle);
+        private void OnPaintFreehand(object sender, RoutedEventArgs e) => SelectTool(ToolMode.Freehand, BtnFreehand);
+        private void OnPressed(object sender, MouseButtonEventArgs e)
+		{
+            _activeShape = DrawableFactory.Create(_activeTool, _activeStroke, _activeBrushSize, _activeFill, _activeBrushTip);
+            _activeShape.SetStart(e.GetPosition(actualCanvas));
 
-		private void OnPaintLine(object sender, RoutedEventArgs e)
-		{
-			BtnLine.IsChecked = true;
-			activeTool = ToolMode.Line;
-			OpenSideBar(activeTool);
-			UpdateStatBar(LblSBTool, activeTool);
-		}
-		private void OnPaintEllipse(object sender, RoutedEventArgs e)
-		{
-			BtnEllipse.IsChecked = true;
-			activeTool = ToolMode.Ellipse;
-			OpenSideBar(activeTool);
-			UpdateStatBar(LblSBTool, activeTool);
-		}
-		private void OnPaintRectangle(object sender, RoutedEventArgs e)
-		{
-			BtnRectangle.IsChecked = true;
-			activeTool = ToolMode.Rectangle;
-			OpenSideBar(activeTool);
-			UpdateStatBar(LblSBTool, activeTool);
-		}
-		private void OnPaintFreehand(object sender, RoutedEventArgs e)
-		{
-			BtnFreehand.IsChecked = true;
-			activeTool = ToolMode.Freehand;
-			OpenSideBar(activeTool);
-			UpdateStatBar(LblSBTool, activeTool);
-		}
-		private void OnPressed(object sender, MouseButtonEventArgs e)
-		{
-			actualCanvas.CaptureMouse();
-			this.Cursor = Cursors.Cross;
-			activeShape = activeTool switch
-			{
-				ToolMode.Line => new DrawableLine(activeStroke, activeBrushSize, activeBrushTip),
-				ToolMode.Ellipse => new DrawableEllipse(activeStroke, activeBrushSize, activeFill),
-				ToolMode.Rectangle => new DrawableRectangle(activeStroke, activeBrushSize, activeFill),
-				ToolMode.Freehand => new DrawableFreehand(activeStroke, activeBrushSize, activeBrushTip),
-				_ => throw new NotImplementedException()
-			};
-			activeShape.SetStart(e.GetPosition(actualCanvas));
+			if (_activeShape.Visual == null) return;
+            actualCanvas.CaptureMouse();
+            this.Cursor = Cursors.Cross;
 
-			if (activeShape.Visual == null) return;
-			actualCanvas.Children.Add(activeShape.Visual);
+            actualCanvas.Children.Add(_activeShape.Visual);
         }
 		private void OnMoved(object sender, MouseEventArgs e)
 		{
-			activeShape?.SetSize(e.GetPosition(actualCanvas));
+			_activeShape?.SetSize(e.GetPosition(actualCanvas));
 		}
-
 		private void OnReleased(object sender, MouseButtonEventArgs e)
 		{
 			actualCanvas.ReleaseMouseCapture();
-			this.Cursor = cursor;
-			if (activeShape?.Visual != null)
+			this.Cursor = _cursor;
+			if (_activeShape?.Visual != null)
 			{
-				_history.Push(activeShape.Visual);
-				Point br = activeShape.BottomRight;
-				if (br.X > actualCanvas.MinWidth) actualCanvas.MinWidth = br.X;
-				if (br.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = br.Y;
+				_historyManager.Push(_activeShape.Visual);
+				Point bottomRight = _activeShape.BottomRight;
+				if (bottomRight.X > actualCanvas.MinWidth) actualCanvas.MinWidth = bottomRight.X;
+				if (bottomRight.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = bottomRight.Y;
 
-                AddToColorHistory(strokeColorHistory, activeStroke, strokeHistoryCombo);
-                if (activeTool is ToolMode.Ellipse or ToolMode.Rectangle)
-                    AddToColorHistory(fillColorHistory, activeFill, fillHistoryCombo);
+                _colorHistoryManager.AddStroke(_activeStroke);
+                if (_activeTool is ToolMode.Ellipse or ToolMode.Rectangle)
+                    _colorHistoryManager.AddFill(_activeFill);
             }
-			activeShape = null;
+			_activeShape = null;
         }
-
 		private void OnClickClear(object sender, RoutedEventArgs e)
 		{
 			actualCanvas.Children.Clear();
-		}
+            _historyManager.ClearHistory();
+
+        }
 		private void OnClickUndo(object sender, RoutedEventArgs e)
 		{
-			if (_history.Count == 0) return;
-			var stackItem = _history.Pop();
-			_undoHistory.Push(stackItem);
-			actualCanvas.Children.Remove(stackItem);
-			
-		}
+            UIElement? element = _historyManager.Undo();
+            if (element == null) return;
+
+            actualCanvas.Children.Remove(element);
+
+        }
 		private void OnClickRedo(object sender, RoutedEventArgs e)
 		{
-			if (_undoHistory.Count == 0) return;
-				var stackItem = _undoHistory.Pop();
-				_history.Push(stackItem);
-				actualCanvas.Children.Add(stackItem);
-		}
+            UIElement? element = _historyManager.Redo();
+            if (element == null) return;
+
+            actualCanvas.Children.Add(element);
+        }
 		private void OnBrushSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-            activeBrushSize = e.NewValue;
+            _activeBrushSize = e.NewValue;
             if (LblStatStrokeThickness == null) return;
-            UpdateStatBar(LblStatStrokeThickness, activeBrushSize);
+            UpdateStatBar(LblStatStrokeThickness, _activeBrushSize);
         }
 		private void OnBrushShapeChanged(object sender, RoutedEventArgs e)
 		{
-            if (sender == radioRound) activeBrushTip = BrushTip.Round;
-            else if (sender == radioSquare) activeBrushTip = BrushTip.Square;
+            if (sender == radioRound) _activeBrushTip = BrushTip.Round;
+            else if (sender == radioSquare) _activeBrushTip = BrushTip.Square;
         }
 		private void OnStrokeColorChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (strokeColorList.SelectedItem is not PropertyInfo pi) return;
-			activeStroke = ToBrush(pi);
-			UpdateStatBar(LblSBStrokeColor, pi);
+			if (strokeColorList.SelectedItem is not PropertyInfo colorProperty) return;
+			_activeStroke = _colorCatalog.ToBrush(colorProperty);
+            UpdateStatBar(LblSBStrokeColor, colorProperty);
 		}
 		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (fillColorList.SelectedItem is not PropertyInfo pi) return;
-			activeFill = ToBrush(pi);
-			UpdateStatBar(LblSBFillColor, pi);
-		}
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
-			actualCanvas.MinWidth = actualCanvas.ActualWidth;
-			actualCanvas.MinHeight = actualCanvas.ActualHeight;
-
-            strokeHistoryCombo.ItemsSource = strokeColorHistory;			
-			fillHistoryCombo.ItemsSource = fillColorHistory;
+			if (fillColorList.SelectedItem is not PropertyInfo colorProperty) return;
+			_activeFill = _colorCatalog.ToBrush(colorProperty);
+			UpdateStatBar(LblSBFillColor, colorProperty);
 		}
 		private void OnCloseSidebar(object sender, RoutedEventArgs e)
 		{
@@ -296,7 +243,7 @@ namespace PaintBox3000
 				MainGrid.ColumnDefinitions[3].Width = new GridLength(250);
 				Splitter.IsEnabled = true;
 			}
-			if (SideBar.Visibility == Visibility.Collapsed)
+			else if (SideBar.Visibility == Visibility.Collapsed)
 			{
 				MainGrid.ColumnDefinitions[3].Width = new GridLength(0);
 				Splitter.IsEnabled = false;
@@ -305,11 +252,26 @@ namespace PaintBox3000
 		}
 		private void OnStrokeHistorySelected(object sender, RoutedEventArgs e)
 		{
-			return;
-		}
+            if (strokeHistoryCombo.SelectedItem is SolidColorBrush brush)
+            {
+                _activeStroke = brush;
+                PropertyInfo? colorProperty = _colorCatalog.GetPropertyInfo(brush.Color);
+
+                if (colorProperty != null)
+                    UpdateStatBar(LblSBStrokeColor, colorProperty);
+            }
+        }
 		private void OnFillHistorySelected(object sender, RoutedEventArgs e)
 		{
-			return;
-		}
+            if (fillHistoryCombo.SelectedItem is SolidColorBrush brush)
+            {
+                _activeFill = brush;
+
+                PropertyInfo? colorProperty = _colorCatalog.GetPropertyInfo(brush.Color);
+
+                if (colorProperty != null)
+                    UpdateStatBar(LblSBFillColor, colorProperty);
+            }
+        }
     }
 }

@@ -10,15 +10,21 @@ namespace PaintBox3000.Core
         public ObservableCollection<SolidColorBrush> StrokeHistory { get; } = new();
         public ObservableCollection<SolidColorBrush> FillHistory { get; } = new();
 
-        public bool AddStroke(SolidColorBrush brush) => Add(StrokeHistory, brush);
-        public bool AddFill(SolidColorBrush brush) => Add(FillHistory, brush);
-        private static bool Add(ObservableCollection<SolidColorBrush> history, SolidColorBrush brush)
+        public void AddStroke(SolidColorBrush brush) => Add(StrokeHistory, brush);
+        public void AddFill(SolidColorBrush brush) => Add(FillHistory, brush);  
+        private static void Add(ObservableCollection<SolidColorBrush> history, SolidColorBrush brush)
         {
-            if (history.Any(b => b.Color == brush.Color)) return false;
+            int index = history
+                .Select((item, index) => new { item, index })
+                .FirstOrDefault(x => x.item.Color == brush.Color)?.index ?? -1;
 
-            history.Insert(0, brush);
-            if (history.Count > 10) history.RemoveAt(history.Count - 1);
-            return true;
+            if (index >= 0)
+                history.Move(index, 0);
+            else
+                history.Insert(0, brush);
+
+            if (history.Count > 10)
+                history.RemoveAt(history.Count - 1);
         }
     }
 }

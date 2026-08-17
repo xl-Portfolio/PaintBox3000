@@ -20,10 +20,6 @@ connecting UI elements with the functionality of a simple drawing program.
 - Drag and drop images onto the canvas
 - Save images as PNG, JPEG or BMP
 
-## Documentation 
-
-For detailed instructions, see the [User Guide](docs/USER_GUIDE.md).
-
 ## Requirements
 
 - Windows
@@ -36,6 +32,10 @@ For detailed instructions, see the [User Guide](docs/USER_GUIDE.md).
 2. Open `PaintBox3000.sln` in Visual Studio.
 3. Build the solution.
 4. Run the application.
+
+## Documentation 
+
+For detailed instructions, see the [User Guide](docs/USER_GUIDE.md).
 
 ## Technologies
 

@@ -49,6 +49,8 @@ For detailed instructions, see the [User Guide](docs/USER_GUIDE.md).
 
 The application separates UI orchestration from reusable functionality:
 
+- 'MainWindow' orchestrates the user interface and coordinates the different application components. It handles user input,
+    tool selection, canvas interaction, and communication with services such as ImageFileService and CanvasHistoryManager.
 - `ColorCatalog` manages available colors and their properties.
 - `ColorHistoryManager` manages recently used colors.
 - `CanvasHistoryManager` provides undo/redo functionality.
@@ -57,7 +59,11 @@ The application separates UI orchestration from reusable functionality:
 
 ## Future Improvements
   
-- Refactoring towards dependency injection
+- Refactor towards dependency injection
+- Introduce a factory-based architecture for sidebar configurations
+- Improve and standardize UI styles
+- Prompt the user to save unsaved changes before closing the application
+- Introduce a tool for selecting and moving drawn elements
 
 ## Screenshots
 

@@ -34,16 +34,25 @@ namespace PaintBox3000
 			InitializeComponent();
 			_cursor = this.Cursor;
 			InitializeSideBar();
-
+            InitializeDefaultChoices();
+            InitializeColorHistoryBox();
+        }
+		private static void UpdateStatBar(Label label, ToolMode tool) => label.Content = tool.ToString().ToLowerInvariant();
+		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLowerInvariant();
+        private static void UpdateStatBar(Label label, double brushSize) => label.Content = $"{(int)brushSize}pt";
+        
+        private void InitializeDefaultChoices()
+        {
             _activeFill = _colorCatalog.GetFirstColor();
             _activeStroke = _colorCatalog.GetLastColor();
 
             BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
-		}
-		private static void UpdateStatBar(Label label, ToolMode tool) => label.Content = tool.ToString().ToLowerInvariant();
-		private static void UpdateStatBar(Label label, PropertyInfo pi) => label.Content = pi.Name.ToLowerInvariant();
-        private static void UpdateStatBar(Label label, double brushSize) => label.Content = $"{(int)brushSize}pt";
-
+        }
+        private void InitializeColorHistoryBox()
+        {
+            strokeHistoryCombo.ItemsSource = _colorHistoryManager.StrokeHistory;
+            fillHistoryCombo.ItemsSource = _colorHistoryManager.FillHistory;
+        }
 		private void InitializeSideBar()
 		{
             PropertyInfo[] colorProperties = _colorCatalog.SortedColors;
@@ -104,8 +113,6 @@ namespace PaintBox3000
             actualCanvas.MinWidth = actualCanvas.ActualWidth;
             actualCanvas.MinHeight = actualCanvas.ActualHeight;
 
-            strokeHistoryCombo.ItemsSource = _colorHistoryManager.StrokeHistory;
-            fillHistoryCombo.ItemsSource = _colorHistoryManager.FillHistory;
         }
         private void OnOpen(object sender, RoutedEventArgs e)
         {
@@ -127,7 +134,6 @@ namespace PaintBox3000
                 DisplayImage(files[0]);
             else
                 DisplayErrorMessage();
-
         }
         private void OnClose(object sender, RoutedEventArgs e) => Close();
 		private void OnSave(object sender, RoutedEventArgs e)
@@ -179,12 +185,16 @@ namespace PaintBox3000
 			{
 				_historyManager.Push(_activeShape.Visual);
 				Point bottomRight = _activeShape.BottomRight;
-				if (bottomRight.X > actualCanvas.MinWidth) actualCanvas.MinWidth = bottomRight.X;
-				if (bottomRight.Y > actualCanvas.MinHeight) actualCanvas.MinHeight = bottomRight.Y;
+				if (bottomRight.X > actualCanvas.MinWidth) 
+                    actualCanvas.MinWidth = bottomRight.X;
+				if (bottomRight.Y > actualCanvas.MinHeight) 
+                    actualCanvas.MinHeight = bottomRight.Y;
 
                 _colorHistoryManager.AddStroke(_activeStroke);
+                strokeHistoryCombo.SelectedIndex = 0;
                 if (_activeTool is ToolMode.Ellipse or ToolMode.Rectangle)
                     _colorHistoryManager.AddFill(_activeFill);
+                    fillHistoryCombo.SelectedIndex = 0;
             }
 			_activeShape = null;
         }
@@ -224,13 +234,15 @@ namespace PaintBox3000
 		{
 			if (strokeColorList.SelectedItem is not PropertyInfo colorProperty) return;
 			_activeStroke = _colorCatalog.ToBrush(colorProperty);
+            _colorHistoryManager.AddStroke(_activeStroke);
             UpdateStatBar(LblSBStrokeColor, colorProperty);
 		}
 		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (fillColorList.SelectedItem is not PropertyInfo colorProperty) return;
 			_activeFill = _colorCatalog.ToBrush(colorProperty);
-			UpdateStatBar(LblSBFillColor, colorProperty);
+            _colorHistoryManager.AddFill(_activeFill);
+            UpdateStatBar(LblSBFillColor, colorProperty);
 		}
 		private void OnCloseSidebar(object sender, RoutedEventArgs e)
 		{

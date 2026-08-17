@@ -55,6 +55,12 @@ The application separates UI orchestration from reusable functionality:
 - `ImageFileService` handles image loading and saving.
 - `DrawableFactory` creates drawable objects based on the selected tool.
 
-  ## Future Improvements
+## Future Improvements
   
 - Refactoring towards dependency injection
+
+## Screenshots
+
+![Menu](screenshots/Paintbox3000_screenshot3.png)
+![Tools](screenshots/Paintbox3000_screenshot.png)
+![Color History](screenshots/Paintbox3000_screenshot2.png)

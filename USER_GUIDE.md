@@ -9,7 +9,7 @@ into your canvas. For installation and project information, see the README.
 
 ## Application Interface
 
-![screenshot](Paintbox3000_screenshot4.png)
+![screenshot](screenshots/Paintbox3000_screenshot4.png)
 
 'Menu Bar (1)' – Provides operations such as opening and saving files, and closing the application.
 'Toolbar' – Contains 'undo, redo and clear buttons (2)', 'drawing tools (3)', and the 'color history (4)'.

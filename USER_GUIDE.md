@@ -11,11 +11,11 @@ into your canvas. For installation and project information, see the README.
 
 ![screenshot](screenshots/Paintbox3000_screenshot4.png)
 
-'Menu Bar (1)' – Provides operations such as opening and saving files, and closing the application.
-'Toolbar' – Contains 'undo, redo and clear buttons (2)', 'drawing tools (3)', and the 'color history (4)'.
-'Canvas (5)' – The main area where drawings are created.
-'Sidebar (6)' – Contains settings for the currently selected tool.
-'Status Bar (7)' – Displays the currently selected tool, brush size, stroke color, and fill color.
+'Menu Bar' (1) – Provides operations such as opening and saving files, and closing the application.
+'Toolbar' – Contains 'undo, redo and clear buttons' (2), 'drawing tools' (3), and the 'color history' (4).
+'Canvas' (5) – The main area where drawings are created.
+'Sidebar' (6) – Contains settings for the currently selected tool.
+'Status Bar' (7) – Displays the currently selected tool, brush size, stroke color, and fill color.
 
 ## Drawing Tools
 

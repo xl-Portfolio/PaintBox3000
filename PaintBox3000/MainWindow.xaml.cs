@@ -234,14 +234,12 @@ namespace PaintBox3000
 		{
 			if (strokeColorList.SelectedItem is not PropertyInfo colorProperty) return;
 			_activeStroke = _colorCatalog.ToBrush(colorProperty);
-            _colorHistoryManager.AddStroke(_activeStroke);
             UpdateStatBar(LblSBStrokeColor, colorProperty);
 		}
 		private void OnFillColorChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (fillColorList.SelectedItem is not PropertyInfo colorProperty) return;
 			_activeFill = _colorCatalog.ToBrush(colorProperty);
-            _colorHistoryManager.AddFill(_activeFill);
             UpdateStatBar(LblSBFillColor, colorProperty);
 		}
 		private void OnCloseSidebar(object sender, RoutedEventArgs e)

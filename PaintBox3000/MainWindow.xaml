@@ -89,7 +89,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Orientation="Vertical">
             <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
-                <MenuItem Header="_File">
+                <MenuItem Header="_Menu">
                     <MenuItem Header="_Open" Click="OnOpen"/>
                     <MenuItem Header="_Save" Click="OnSave"/>
                     <MenuItem Header="_Close" Click="OnClose"/>

@@ -2,7 +2,7 @@
 
 ## About
 
-PaintBox3000 demonstrates the use of C#, WPF and object-oriented programming principles as well as 
+PaintBox3000 is a practice project and demonstrates the use of C#, WPF and object-oriented programming principles as well as 
 connecting UI elements with the functionality of a simple drawing program.
 
 ## Features

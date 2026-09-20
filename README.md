@@ -2,8 +2,7 @@
 
 ## About
 
-PaintBox3000 was developed as part of my vocational training in software development (IHK).
-The project demonstrates the use of C#, WPF and object-oriented programming principles as well as 
+PaintBox3000 demonstrates the use of C#, WPF and object-oriented programming principles as well as 
 connecting UI elements with the functionality of a simple drawing program.
 
 ## Features

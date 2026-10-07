@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Windows.Shapes;
+
 using PaintBox3000.Enums;
 
 namespace PaintBox3000.Helpers

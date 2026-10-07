@@ -5,7 +5,6 @@ namespace PaintBox3000.Tests
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PaintBox3000.Enums;
+
 using System.Windows.Media;
 
 namespace PaintBox3000.Drawables
@@ -11,7 +12,7 @@ namespace PaintBox3000.Drawables
             ToolMode.Ellipse => new DrawableEllipse(stroke, strokeThickness, fill),
             ToolMode.Rectangle => new DrawableRectangle(stroke, strokeThickness, fill),
             ToolMode.Freehand => new DrawableFreehand(stroke, strokeThickness, tip),
-            _ => throw new NotImplementedException()
+            _ => throw new NotImplementedException(),
         };
     }
 }

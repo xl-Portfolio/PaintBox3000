@@ -3,12 +3,12 @@ using System.Windows.Shapes;
 
 namespace PaintBox3000.Drawables
 {
-    public class DrawableRectangle : AbstractDrawable
+    internal class DrawableRectangle : AbstractDrawable
     {
         private readonly Rectangle _rectangle;
-        public override Shape? Visual => _rectangle;
 
-        public DrawableRectangle(Brush stroke, double strokeThickness, Brush? fill) : base(stroke, strokeThickness)
+        public DrawableRectangle(Brush stroke, double strokeThickness, Brush? fill)
+            : base(stroke, strokeThickness)
         {
             _rectangle = new();
             _rectangle.Fill = fill;
@@ -17,5 +17,6 @@ namespace PaintBox3000.Drawables
             ApplyStrokeToVisual();
         }
 
+        public override Shape? Visual => _rectangle;
     }
 }

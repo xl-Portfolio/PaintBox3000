@@ -1,21 +1,16 @@
 ﻿using System.IO;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PaintBox3000.Core
 {
     /// <summary>
-    /// Saves and Loads image-files
+    /// Saves and Loads image-files.
     /// </summary>
-    internal class ImageFileService
-    {  
-        /// <summary>
-        /// String(path) to Uri to BitmapImage
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns>BitmapImage</returns>
-        public BitmapImage LoadImage(string path)
+    internal static class ImageFileService
+    {
+        public static BitmapImage LoadImage(string path)
         {
             Uri uri = new(path); // Pfad vorhanden?
 
@@ -27,12 +22,8 @@ namespace PaintBox3000.Core
 
             return bmp;
         }
-        /// <summary>
-        /// Canvas to BitmapFrames to Filestream to saved File
-        /// </summary>
-        /// <param name="canvas"></param>
-        /// <param name="path"></param>
-        public void SaveCanvas(Canvas canvas, string path)
+
+        public static void SaveCanvas(Canvas canvas, string path)
         {
             int width = (int)canvas.ActualWidth;
             int height = (int)canvas.ActualHeight;
@@ -40,11 +31,11 @@ namespace PaintBox3000.Core
             RenderTargetBitmap renderBitmap = new(width, height, 96, 96, PixelFormats.Pbgra32);
             renderBitmap.Render(canvas);
 
-            BitmapEncoder encoder = Path.GetExtension(path).ToLower() switch
+            BitmapEncoder encoder = Path.GetExtension(path).ToLowerInvariant() switch
             {
                 ".jpg" or ".jpeg" => new JpegBitmapEncoder(),
                 ".bmp" => new BmpBitmapEncoder(),
-                _ => new PngBitmapEncoder()
+                _ => new PngBitmapEncoder(),
             };
             encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
 

@@ -3,7 +3,7 @@
 namespace PaintBox3000.Core
 {
     /// <summary>
-    /// provides undo / redo functionality by keeping track of drawn elements
+    /// provides undo / redo functionality by keeping track of drawn elements.
     /// </summary>
     internal class CanvasHistoryManager
     {
@@ -17,7 +17,10 @@ namespace PaintBox3000.Core
 
         public UIElement? Undo()
         {
-            if (_history.Count == 0) return null;
+            if (_history.Count == 0)
+            {
+                return null;
+            }
 
             UIElement element = _history.Pop();
             _undoHistory.Push(element);
@@ -26,7 +29,10 @@ namespace PaintBox3000.Core
 
         public UIElement? Redo()
         {
-            if (_undoHistory.Count == 0) return null;
+            if (_undoHistory.Count == 0)
+            {
+                return null;
+            }
 
             UIElement element = _undoHistory.Pop();
             _history.Push(element);

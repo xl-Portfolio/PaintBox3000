@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaintBox3000", "PaintBox3000\PaintBox3000.csproj", "{A56D25E7-4DDC-4503-89ED-3C9B37D045E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaintBox3000", "src\PaintBox3000\PaintBox3000.csproj", "{A56D25E7-4DDC-4503-89ED-3C9B37D045E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaintBox3000.Tests", "tests\PaintBox3000.Tests\PaintBox3000.Tests.csproj", "{BA64A1E3-18FE-486C-BB2C-934AE4C4DE20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A56D25E7-4DDC-4503-89ED-3C9B37D045E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A56D25E7-4DDC-4503-89ED-3C9B37D045E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A56D25E7-4DDC-4503-89ED-3C9B37D045E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA64A1E3-18FE-486C-BB2C-934AE4C4DE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA64A1E3-18FE-486C-BB2C-934AE4C4DE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA64A1E3-18FE-486C-BB2C-934AE4C4DE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA64A1E3-18FE-486C-BB2C-934AE4C4DE20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

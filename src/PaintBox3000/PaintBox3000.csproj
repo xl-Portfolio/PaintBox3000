@@ -25,4 +25,8 @@
     </Content>
   </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="PaintBox3000.Tests" />
+    </ItemGroup>
+
 </Project>

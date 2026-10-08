@@ -12,17 +12,18 @@ namespace PaintBox3000.Drawables
         private readonly Line _line;
 
         public DrawableLine(Brush stroke, double strokeThickness, BrushTip tip)
-            : base(stroke, strokeThickness)
+            : base(new Line(), stroke, strokeThickness)
         {
-            _line = new();
-            ApplyStrokeToVisual();
+            _line = (Line)Visual;
             if (Visual != null)
             {
                 BrushTipHelper.Apply(Visual, tip);
             }
         }
 
-        public override Shape? Visual => _line;
+        public override Point BottomRight => new(
+            Math.Max(_line.X1, _line.X2),
+            Math.Max(_line.Y1, _line.Y2));
 
         public override void SetStart(Point p)
         {
@@ -37,10 +38,5 @@ namespace PaintBox3000.Drawables
             _line.X2 = p.X;
             _line.Y2 = p.Y;
         }
-
-        public override Point BottomRight => new(
-            Math.Max(_line.X1, _line.X2),
-            Math.Max(_line.Y1, _line.Y2)
-        );
     }
 }

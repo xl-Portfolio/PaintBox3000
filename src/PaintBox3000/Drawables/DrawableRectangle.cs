@@ -5,18 +5,12 @@ namespace PaintBox3000.Drawables
 {
     internal class DrawableRectangle : AbstractDrawable
     {
-        private readonly Rectangle _rectangle;
-
         public DrawableRectangle(Brush stroke, double strokeThickness, Brush? fill)
-            : base(stroke, strokeThickness)
+            : base(new Rectangle(), stroke, strokeThickness)
         {
-            _rectangle = new();
-            _rectangle.Fill = fill;
-            _rectangle.Width = 0;
-            _rectangle.Height = 0;
-            ApplyStrokeToVisual();
+            Visual.Fill = fill;
+            Visual.Width = 0;
+            Visual.Height = 0;
         }
-
-        public override Shape? Visual => _rectangle;
     }
 }

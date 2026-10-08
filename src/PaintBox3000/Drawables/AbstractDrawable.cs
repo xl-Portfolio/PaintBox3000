@@ -7,16 +7,18 @@ namespace PaintBox3000.Drawables
 {
     public abstract class AbstractDrawable : IDrawable
     {
-        private Brush? _stroke;
-        private double _strokeThickness;
+        private readonly Brush? _stroke;
+        private readonly double _strokeThickness;
 
-        protected AbstractDrawable(Brush stroke, double strokeThickness)
+        protected AbstractDrawable(Shape visual, Brush stroke, double strokeThickness)
         {
             _stroke = stroke;
             _strokeThickness = strokeThickness;
+            Visual = visual;
+            ApplyStrokeToVisual();
         }
 
-        public abstract Shape? Visual { get; }
+        public Shape Visual { get; }
 
         public virtual Point BottomRight => new(
             Canvas.GetLeft(Visual) + (Visual?.Width ?? 0),

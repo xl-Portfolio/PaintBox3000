@@ -12,17 +12,14 @@ namespace PaintBox3000.Drawables
         private readonly Polyline _polyline;
 
         public DrawableFreehand(Brush stroke, double strokeThickness, BrushTip tip)
-            : base(stroke, strokeThickness)
+            : base(new Polyline(), stroke, strokeThickness)
         {
-            _polyline = new();
-            ApplyStrokeToVisual();
+            _polyline = (Polyline)Visual;
             if (Visual != null)
             {
                 BrushTipHelper.Apply(Visual, tip);
             }
         }
-
-        public override Shape? Visual => _polyline;
 
         public override Point BottomRight
         {
@@ -35,8 +32,7 @@ namespace PaintBox3000.Drawables
 
                 return new Point(
                     _polyline.Points.Max(pt => pt.X),
-                    _polyline.Points.Max(pt => pt.Y)
-                );
+                    _polyline.Points.Max(pt => pt.Y));
             }
         }
 

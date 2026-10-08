@@ -1,25 +1,16 @@
 ﻿using System.Windows.Media;
 using System.Windows.Shapes;
 
-
 namespace PaintBox3000.Drawables
 {
     internal class DrawableEllipse : AbstractDrawable
     {
-        private readonly Ellipse _ellipse;
-
         public DrawableEllipse(Brush stroke, double strokeThickness, Brush? fill)
-            : base(stroke, strokeThickness)
+            : base(new Ellipse(), stroke, strokeThickness)
         {
-            _ellipse = new()
-            {
-                Fill = fill,
-                Width = 0,
-                Height = 0,
-            };
-            ApplyStrokeToVisual();
+            Visual.Fill = fill;
+            Visual.Width = 0;
+            Visual.Height = 0;
         }
-
-        public override Shape? Visual => _ellipse;
     }
 }

@@ -1,6 +1,6 @@
-﻿using PaintBox3000.Enums;
+﻿using System.Windows.Media;
 
-using System.Windows.Media;
+using PaintBox3000.Enums;
 
 namespace PaintBox3000.Drawables
 {

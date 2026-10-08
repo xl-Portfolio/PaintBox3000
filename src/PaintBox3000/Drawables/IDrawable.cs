@@ -5,7 +5,7 @@ namespace PaintBox3000.Drawables
 {
     internal interface IDrawable
     {
-        Shape? Visual { get; }
+        Shape Visual { get; }
 
         void SetStart(Point p);
 

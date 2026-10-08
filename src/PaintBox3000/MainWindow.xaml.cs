@@ -13,7 +13,7 @@ using PaintBox3000.Enums;
 namespace PaintBox3000
 {
     /// <summary>
-    /// orchestrates UI and functionality
+    /// orchestrates UI and functionality.
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -21,7 +21,7 @@ namespace PaintBox3000
         private readonly ColorCatalog _colorCatalog = new();
         private readonly ColorHistoryManager _colorHistoryManager = new();
 
-        private Cursor _cursor;
+        private readonly Cursor _cursor;
         private ToolMode _activeTool;
         private AbstractDrawable? _activeShape;
         private SolidColorBrush _activeFill;

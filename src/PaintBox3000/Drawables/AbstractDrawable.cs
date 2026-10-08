@@ -7,15 +7,11 @@ namespace PaintBox3000.Drawables
 {
     public abstract class AbstractDrawable : IDrawable
     {
-        private readonly Brush? _stroke;
-        private readonly double _strokeThickness;
-
         protected AbstractDrawable(Shape visual, Brush stroke, double strokeThickness)
         {
-            _stroke = stroke;
-            _strokeThickness = strokeThickness;
             Visual = visual;
-            ApplyStrokeToVisual();
+            Visual.Stroke = stroke;
+            Visual.StrokeThickness = strokeThickness;
         }
 
         public Shape Visual { get; }
@@ -37,15 +33,6 @@ namespace PaintBox3000.Drawables
             Canvas.SetLeft(Visual, Math.Min(PointStart.X, p.X));
             Visual.Width = Math.Abs(p.X - PointStart.X);
             Visual.Height = Math.Abs(p.Y - PointStart.Y);
-        }
-
-        protected void ApplyStrokeToVisual()
-        {
-            if (Visual != null)
-            {
-                Visual.Stroke = _stroke;
-                Visual.StrokeThickness = _strokeThickness;
-            }
         }
     }
 }

@@ -10,14 +10,17 @@ namespace PaintBox3000.Core
     /// </summary>
     internal static class ImageFileService
     {
+        public const string SaveFilter = "PNG-Datei|*.png|JPEG-Datei|*.jpg|Bitmap-Datei|*.bmp";
+        public const string OpenFilter = "Imagefiles|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff";
+
         public static BitmapImage LoadImage(string path)
         {
             Uri uri = new(path); // Pfad vorhanden?
 
-            BitmapImage bmp = new(); //Bildformat gültig?
+            BitmapImage bmp = new(); // Bildformat gültig?
             bmp.BeginInit();
             bmp.UriSource = uri;
-            bmp.CacheOption = BitmapCacheOption.OnLoad; //lädt und decodiert präventiv
+            bmp.CacheOption = BitmapCacheOption.OnLoad; // lädt und decodiert präventiv
             bmp.EndInit();
 
             return bmp;
@@ -35,7 +38,8 @@ namespace PaintBox3000.Core
             {
                 ".jpg" or ".jpeg" => new JpegBitmapEncoder(),
                 ".bmp" => new BmpBitmapEncoder(),
-                _ => new PngBitmapEncoder(),
+                ".png" => new PngBitmapEncoder(),
+                _ => throw new NotSupportedException("Das Format wird nicht unterstützt."),
             };
             encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
 

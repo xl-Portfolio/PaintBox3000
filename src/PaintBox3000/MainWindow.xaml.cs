@@ -146,7 +146,7 @@ namespace PaintBox3000
             {
                 DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Title = "Bild öffnen",
-                Filter = "Imagefiles|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff",
+                Filter = ImageFileService.OpenFilter,
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -177,7 +177,7 @@ namespace PaintBox3000
             {
                 DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Title = "Bild speichern",
-                Filter = "PNG-Datei|*.png|JPEG-Datei|*.jpg|Bitmap-Datei|*.bmp",
+                Filter = ImageFileService.SaveFilter,
                 DefaultExt = ".png",
                 FileName = "PaintBox3000",
             };
@@ -190,6 +190,10 @@ namespace PaintBox3000
             try
             {
                 ImageFileService.SaveCanvas(actualCanvas, saveFileDialog.FileName);
+            }
+            catch (NotSupportedException ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             catch (Exception)
             {

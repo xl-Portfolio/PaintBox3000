@@ -215,7 +215,6 @@ namespace PaintBox3000
 
             actualCanvas.CaptureMouse();
             this.Cursor = Cursors.Cross;
-
             actualCanvas.Children.Add(_activeShape.Visual);
         }
 
@@ -232,6 +231,7 @@ namespace PaintBox3000
             {
                 _historyManager.Push(_activeShape.Visual);
                 Point bottomRight = _activeShape.BottomRight;
+
                 if (bottomRight.X > actualCanvas.MinWidth)
                 {
                     actualCanvas.MinWidth = bottomRight.X;
@@ -244,12 +244,12 @@ namespace PaintBox3000
 
                 _colorHistoryManager.AddStroke(_activeStroke);
                 strokeHistoryCombo.SelectedIndex = 0;
-                if (_activeTool is ToolMode.Ellipse or ToolMode.Rectangle)
-                {
-                    _colorHistoryManager.AddFill(_activeFill);
-                }
 
-                fillHistoryCombo.SelectedIndex = 0;
+                if (_activeShape.Visual.Fill is SolidColorBrush usedFill)
+                {
+                    _colorHistoryManager.AddFill(usedFill);
+                    fillHistoryCombo.SelectedIndex = 0;
+                }
             }
 
             _activeShape = null;

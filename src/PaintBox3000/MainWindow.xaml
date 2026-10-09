@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PaintBox3000"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="PaintBox3000" Height="720" Width="1280"
@@ -73,6 +72,12 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <ItemsPanelTemplate x:Key="ColorWrapPanel">
+            <WrapPanel/>
+        </ItemsPanelTemplate>
+        <DataTemplate x:Key="ColorSwatchTemplate">
+            <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=Name}"/>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid x:Name="MainGrid" ClipToBounds="False">
@@ -215,35 +220,21 @@
 
             <TabControl>
                 <TabItem Header="Stroke">
-                    <ListBox x:Name="strokeColorList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                            ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnStrokeColorChanged">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=Name}"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListBox x:Name="strokeColorList" 
+                             ItemsPanel="{StaticResource ColorWrapPanel}"
+                             ItemTemplate="{StaticResource ColorSwatchTemplate}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                            ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                             SelectionChanged="OnStrokeColorChanged"/>
                 </TabItem>
 
                 <TabItem Header="Fill">
-                    <ListBox x:Name="fillColorList" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                            ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnFillColorChanged">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=MemberType}"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListBox x:Name="fillColorList" 
+                             ItemsPanel="{StaticResource ColorWrapPanel}"
+                             ItemTemplate="{StaticResource ColorSwatchTemplate}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                             SelectionChanged="OnFillColorChanged"/>
                 </TabItem>
             </TabControl>
         </DockPanel>

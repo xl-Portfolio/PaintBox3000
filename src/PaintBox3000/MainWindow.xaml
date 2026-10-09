@@ -223,8 +223,8 @@
                     <ListBox x:Name="strokeColorList" 
                              ItemsPanel="{StaticResource ColorWrapPanel}"
                              ItemTemplate="{StaticResource ColorSwatchTemplate}"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                            ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto" 
                              SelectionChanged="OnStrokeColorChanged"/>
                 </TabItem>
 

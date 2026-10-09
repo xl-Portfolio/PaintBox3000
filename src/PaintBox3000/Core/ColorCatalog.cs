@@ -17,10 +17,6 @@ namespace PaintBox3000.Core
 
         public static SolidColorBrush ToBrush(PropertyInfo p) => new(ToColor(p));
 
-        public SolidColorBrush GetFirstColor() => ToBrush(SortedColors[0]);
-
-        public SolidColorBrush GetLastColor() => ToBrush(SortedColors[^1]);
-
         public PropertyInfo? GetPropertyInfo(Color color) =>
             SortedColors.FirstOrDefault(p => ToColor(p) == color);
 

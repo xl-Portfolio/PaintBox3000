@@ -24,8 +24,8 @@ namespace PaintBox3000
         private readonly Cursor _cursor;
         private ToolMode _activeTool;
         private AbstractDrawable? _activeShape;
-        private SolidColorBrush _activeFill;
-        private SolidColorBrush _activeStroke;
+        private SolidColorBrush? _activeFill;
+        private SolidColorBrush? _activeStroke;
         private double _activeBrushSize;
         private BrushTip _activeBrushTip;
 
@@ -67,10 +67,11 @@ namespace PaintBox3000
 
         private void InitializeDefaultChoices()
         {
-            _activeFill = _colorCatalog.GetFirstColor();
-            _activeStroke = _colorCatalog.GetLastColor();
-
-            BtnLine.RaiseEvent(new RoutedEventArgs(RadioButton.ClickEvent));
+            fillColorList.SelectedIndex = 0;
+            strokeColorList.SelectedIndex = strokeColorList.Items.Count - 1;
+            brushSlider.Value = 3;
+            radioRound.IsChecked = true;
+            SelectTool(ToolMode.Line, BtnLine);
         }
 
         private void InitializeColorHistoryBox()
@@ -82,15 +83,8 @@ namespace PaintBox3000
         private void InitializeSideBar()
         {
             PropertyInfo[] colorProperties = _colorCatalog.SortedColors;
-
             fillColorList.ItemsSource = colorProperties;
-            fillColorList.SelectedIndex = 0;
-
             strokeColorList.ItemsSource = colorProperties;
-            strokeColorList.SelectedIndex = colorProperties.Length - 1;
-
-            brushSlider.Value = 3;
-            radioRound.IsChecked = true;
         }
 
         private void OpenSideBar(ToolMode tool)

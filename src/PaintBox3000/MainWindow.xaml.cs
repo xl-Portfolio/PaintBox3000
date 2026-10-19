@@ -17,6 +17,7 @@ namespace PaintBox3000
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly string StartFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private readonly CanvasHistoryManager _historyManager = new();
         private readonly ColorCatalog _colorCatalog = new();
         private readonly ColorHistoryManager _colorHistoryManager = new();
@@ -138,7 +139,7 @@ namespace PaintBox3000
         {
             OpenFileDialog openFileDialog = new()
             {
-                DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                DefaultDirectory = StartFolder,
                 Title = "Bild öffnen",
                 Filter = ImageFileService.OpenFilter,
             };
@@ -169,7 +170,7 @@ namespace PaintBox3000
         {
             SaveFileDialog saveFileDialog = new()
             {
-                DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                DefaultDirectory = StartFolder,
                 Title = "Bild speichern",
                 Filter = ImageFileService.SaveFilter,
                 DefaultExt = ".png",

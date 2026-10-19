@@ -335,28 +335,22 @@ namespace PaintBox3000
             }
         }
 
-        private SolidColorBrush SelectColorFromHistory(Label colorLabel, ComboBox colorHistoryBox)
+        private void SelectInColorList(ListBox colorList, ComboBox colorHistoryBox)
         {
             if (colorHistoryBox.SelectedItem is SolidColorBrush brush)
             {
-                PropertyInfo? colorProperty = _colorCatalog.GetPropertyInfo(brush.Color);
-                UpdateStatBar(colorLabel, colorProperty);
-                return brush;
-            }
-            else
-            {
-                return null;
+                colorList.SelectedItem = _colorCatalog.GetPropertyInfo(brush.Color);
             }
         }
 
         private void OnStrokeHistorySelected(object sender, RoutedEventArgs e)
         {
-            _activeStroke = SelectColorFromHistory(LblSBStrokeColor, strokeHistoryCombo);
+            SelectInColorList(strokeColorList, strokeHistoryCombo);
         }
 
         private void OnFillHistorySelected(object sender, RoutedEventArgs e)
         {
-            _activeFill = SelectColorFromHistory(LblSBFillColor, fillHistoryCombo);
+            SelectInColorList(fillColorList, fillHistoryCombo);
         }
     }
 }

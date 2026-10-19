@@ -134,10 +134,10 @@
                         </Grid.ColumnDefinitions>
                         <Label Content="tools" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource LblToolBar}"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <RadioButton x:Name="BtnFreehand" Content="Freehand" GroupName="tools" Click="OnPaintFreehand" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnLine" Content="Line" GroupName="tools" Click="OnPaintLine" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnRectangle" Content="Rectangle" GroupName="tools" Click="OnPaintRectangle" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnEllipse" Content="Ellipse" GroupName="tools" Click="OnPaintEllipse" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnFreehand" Content="Freehand" Click="OnPaintFreehand" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnLine" Content="Line" Click="OnPaintLine" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnRectangle" Content="Rectangle" Click="OnPaintRectangle" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnEllipse" Content="Ellipse" Click="OnPaintEllipse" Style="{StaticResource ToolBarRadio}"/>
                         </StackPanel>
                     </Grid>
                 </ToolBar>

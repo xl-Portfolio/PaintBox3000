@@ -9,47 +9,92 @@
         Loaded="OnLoaded">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="BaGr1" Color="Black"/>
-        <SolidColorBrush x:Key="FoGr1" Color="White"/>
-        <FontFamily x:Key="Font1">Cascadia Code</FontFamily>
-        <sys:Double x:Key="FontSize1">10</sys:Double>
-        <sys:Double x:Key="Fontsize2">8</sys:Double>
-        <FontStretch x:Key="Stretch1">Expanded</FontStretch>
-        <sys:Double x:Key="ButtonSize">25</sys:Double>
+        <SolidColorBrush x:Key="BaseBackground" Color="Black"/>
+        <SolidColorBrush x:Key="BaseForeground" Color="White"/>
+        <SolidColorBrush x:Key="OverlayBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="BorderColor" Color="Gray"/>
+        <SolidColorBrush x:Key="SelectedBorderColor" Color="DarkGray"/>
+        <SolidColorBrush x:Key="MouseHoverColor" Color="#FFD0E8F8"/>
+        <FontFamily x:Key="BaseFont">Cascadia Code</FontFamily>
+        <sys:Double x:Key="BaseFontSize">10</sys:Double>
+        <sys:Double x:Key="SmallFontSize">8</sys:Double>
+        <FontStretch x:Key="BaseStretch">Expanded</FontStretch>
+        <sys:Double x:Key="CanvasWidth">1250</sys:Double>
+        <sys:Double x:Key="BaseItemSize">25</sys:Double>
+        <sys:Double x:Key="MinPanelSize">20</sys:Double>
+        <sys:Double x:Key="BaseTileSize">17</sys:Double>
+        <sys:Double x:Key="ItemWidth">50</sys:Double>
+        <sys:Double x:Key="ThinBorder">0.5</sys:Double>
+        <Thickness x:Key="BaseBorder">1</Thickness>
+        <Thickness x:Key="SelectedBorder">2</Thickness>
 
-        <Style x:Key="BaseStyle" TargetType="Control">
-            <Setter Property="Background" Value="{StaticResource BaGr1}"/>
-            <Setter Property="Foreground" Value="{StaticResource FoGr1}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Font1}"/>
-            <Setter Property="FontSize" Value="{StaticResource FontSize1}"/>
-            <Setter Property="FontStretch" Value="{StaticResource Stretch1}"/>
+        <Style x:Key="UIBaseStyle" TargetType="FrameworkElement">
+            <Setter Property="MinHeight" Value="{StaticResource MinPanelSize}"/>
         </Style>
-        <Style x:Key="ToolBarStyle" TargetType="Control" BasedOn="{StaticResource BaseStyle}">
+
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
+        </Style>
+            
+        <Style x:Key="ControlBaseStyle" TargetType="Control">
+            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource BaseForeground}"/>
+            <Setter Property="FontFamily" Value="{StaticResource BaseFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
+            <Setter Property="FontStretch" Value="{StaticResource BaseStretch}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
-        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource ToolBarStyle}">
-            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+            
+        <Style TargetType="Button" BasedOn="{StaticResource ControlBaseStyle}"/>
+        <Style TargetType="RadioButton" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
-        <Style TargetType="Menu" BasedOn="{StaticResource BaseStyle}"/>
-        <Style TargetType="MenuItem" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Height" Value="{StaticResource ButtonSize}"/>
+        <Style TargetType="Label" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="Background" Value="{StaticResource OverlayBackground}"/>
         </Style>
-        <Style TargetType="ToolBar" BasedOn="{StaticResource ToolBarStyle}">
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style x:Key="ColorTile" TargetType="Rectangle">
+            <Setter Property="Height" Value="{StaticResource BaseTileSize}"/>
+            <Setter Property="Width" Value="{StaticResource BaseTileSize}"/>
+            <Setter Property="Stroke" Value="{StaticResource BorderColor}"/>
+            <Setter Property="StrokeThickness" Value="{StaticResource ThinBorder}"/>
+        </Style>
+
+        <Style TargetType="Menu" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+            <Style TargetType="MenuItem" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="Height" Value="{StaticResource BaseItemSize}"/>
+        </Style>
+
+        <Style x:Key="ToggleLook" TargetType="Control" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Background" Value="{StaticResource OverlayBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="{StaticResource BaseBorder}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MouseHoverColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ToolBarTray" BasedOn="{StaticResource UIBaseStyle}">
+            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
+        </Style>
+        <Style TargetType="ToolBar" BasedOn="{StaticResource ControlBaseStyle}">
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         </Style>
-        <Style TargetType="StatusBar" BasedOn="{StaticResource BaseStyle}"/>
-        <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="FontSize" Value="{StaticResource Fontsize2}"/>
+        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="Height" Value="{StaticResource BaseItemSize}"/>
         </Style>
-        <Style x:Key="LblToolBar" TargetType="Label" BasedOn="{StaticResource ToolBarStyle}"/>
-        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}"/>
-        <Style TargetType="TabPanel" BasedOn="{StaticResource BaseStyle}"/>
-        <Style x:Key="ToolBarRadio" TargetType="RadioButton" BasedOn="{StaticResource ToolBarStyle}">
+        <Style x:Key="ToolBarRadio" TargetType="RadioButton" BasedOn="{StaticResource ToggleLook}">
             <Setter Property="GroupName" Value="Tools"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
@@ -64,13 +109,34 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BaGr1}"/>
-                    <Setter Property="Foreground" Value="{StaticResource FoGr1}"/>
-                    <Setter Property="BorderBrush" Value="DarkGray"/>
-                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SelectedBorderColor}"/>
+                    <Setter Property="BorderThickness" Value="{StaticResource SelectedBorder}"/>
                 </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FFD0E8F8"/>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ComboBoxToolBar" TargetType="ComboBox">
+            <Setter Property="Height" Value="{StaticResource BaseItemSize}"/>
+            <Setter Property="Width" Value="{StaticResource ItemWidth}"/>
+        </Style>
+
+        <Style x:Key="SideBarTop" TargetType="Border" BasedOn="{StaticResource UIBaseStyle}"/>
+        <Style TargetType="TabItem" BasedOn="{StaticResource ToggleLook}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource SelectedBorderColor}"/>
+                    <Setter Property="BorderThickness" Value="{StaticResource SelectedBorder}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -78,8 +144,16 @@
             <WrapPanel/>
         </ItemsPanelTemplate>
         <DataTemplate x:Key="ColorSwatchTemplate">
-            <Rectangle Fill="{Binding Path=Name}" Width="17" Height="17" ToolTip="{Binding Path=Name}"/>
+            <Rectangle Fill="{Binding Path=Name}" ToolTip="{Binding Path=Name}" Style="{StaticResource ColorTile}"/>
         </DataTemplate>
+
+        <Style TargetType="StatusBar" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="LblStatusBar" TargetType="Label" BasedOn="{StaticResource ControlBaseStyle}">
+            <Setter Property="FontSize" Value="{StaticResource SmallFontSize}"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
     </Window.Resources>
 
     <Grid x:Name="MainGrid" ClipToBounds="False">
@@ -92,17 +166,17 @@
             <ColumnDefinition x:Name="Border1Col" Width="Auto"/>
             <ColumnDefinition x:Name="CanvasCol" Width="*"/>
             <ColumnDefinition x:Name="SplitterCol" Width="Auto"/>
-            <ColumnDefinition x:Name="SiedeBarCol" />
+            <ColumnDefinition x:Name="SideBarCol" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Orientation="Vertical">
-            <Menu x:Name="MenuBar" MinHeight="20" MinWidth="50">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Top" Orientation="Vertical">
+            <Menu x:Name="MenuBar" MinHeight="{StaticResource MinPanelSize}" MinWidth="{StaticResource ItemWidth}">
                 <MenuItem Header="_Menu">
                     <MenuItem Header="_Open" Click="OnOpen"/>
                     <MenuItem Header="_Save" Click="OnSave"/>
                     <MenuItem Header="_Close" Click="OnClose"/>
                 </MenuItem>
             </Menu>
-            <ToolBarTray Background="{StaticResource BaGr1}" MinHeight="20">
+            <ToolBarTray>
                 <ToolBar x:Name="ToolBarUndo">
                     <Button x:Name="ClearBtn" ToolTip="Clear Canvas" Click="OnClickClear">
                         <Button.Content>
@@ -121,17 +195,20 @@
                     </Button>
                 </ToolBar>
                 <ToolBar x:Name="ToolBarShapes">
+                    <ToolBar.Resources>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ToolBarRadio}"/>
+                    </ToolBar.Resources>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="tools" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource LblToolBar}"/>
+                        <Label Content="tools" Grid.Column="0"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <RadioButton x:Name="BtnFreehand" Content="Freehand" Click="OnPaintFreehand" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnLine" Content="Line" Click="OnPaintLine" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnRectangle" Content="Rectangle" Click="OnPaintRectangle" Style="{StaticResource ToolBarRadio}"/>
-                            <RadioButton x:Name="BtnEllipse" Content="Ellipse" Click="OnPaintEllipse" Style="{StaticResource ToolBarRadio}"/>
+                            <RadioButton x:Name="BtnFreehand" Content="Freehand" Click="OnPaintFreehand"/>
+                            <RadioButton x:Name="BtnLine" Content="Line" Click="OnPaintLine"/>
+                            <RadioButton x:Name="BtnRectangle" Content="Rectangle" Click="OnPaintRectangle"/>
+                            <RadioButton x:Name="BtnEllipse" Content="Ellipse" Click="OnPaintEllipse"/>
                         </StackPanel>
                     </Grid>
                 </ToolBar>
@@ -143,23 +220,23 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="color history" Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ToolBarStyle}"/>
+                        <Label Content="color history" Grid.Column="0"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Label Content="S" Style="{StaticResource LblToolBar}"/>
-                            <ComboBox x:Name="strokeHistoryCombo" Width="50" Height="25"  SelectionChanged="OnStrokeHistorySelected">
+                            <Label Content="S"/>
+                            <ComboBox x:Name="strokeHistoryCombo" Style="{StaticResource ComboBoxToolBar}" SelectionChanged="OnStrokeHistorySelected">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Rectangle Fill="{Binding}" Width="17" Height="17"/>
+                                        <Rectangle Fill="{Binding}" Style="{StaticResource ColorTile}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="2">
-                            <Label Content="F"  Style="{StaticResource LblToolBar}"/>
-                            <ComboBox x:Name="fillHistoryCombo" Width="50" Height="25" SelectionChanged="OnFillHistorySelected">
+                            <Label Content="F"/>
+                            <ComboBox x:Name="fillHistoryCombo" Style="{StaticResource ComboBoxToolBar}" SelectionChanged="OnFillHistorySelected">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Rectangle Fill="{Binding}" Width="17" Height="17"/>
+                                        <Rectangle Fill="{Binding}" Style="{StaticResource ColorTile}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -169,47 +246,61 @@
             </ToolBarTray>
         </StackPanel>
 
-        <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaGr1}"/>
+        <Border Width="5" Grid.Column="0" Grid.Row="1" Background="{StaticResource BaseBackground}"/>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Canvas x:Name="actualCanvas" Width="1250" ClipToBounds="False" Background="White" MouseLeftButtonDown="OnPressed" 
+            <Canvas x:Name="actualCanvas" Width="{StaticResource CanvasWidth}" ClipToBounds="False" Background="White" MouseLeftButtonDown="OnPressed" 
                     MouseMove="OnMoved" MouseLeftButtonUp="OnReleased" AllowDrop="True" Drop="OnDrop"/>
         </ScrollViewer>
 
-        <GridSplitter x:Name="Splitter" Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaGr1}"/>
+        <GridSplitter x:Name="Splitter" Grid.Row="1" Grid.Column="2" Width="5" ResizeBehavior="PreviousAndNext" Background="{StaticResource BaseBackground}"/>
         <DockPanel x:Name="SideBar" Grid.Row="1" Grid.Column="3" IsVisibleChanged="OnSideBarVisibilityChanged">
             <Grid DockPanel.Dock="Top" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="SideBarTop" Grid.ColumnSpan="2" Height="25" Background="{StaticResource BaGr1}"/>
-                <Label x:Name="SideBarHeader" Grid.Column="0" HorizontalAlignment="Left" Content="settings" Style="{StaticResource LblToolBar}"/>
-                <Button x:Name="BtnCloseSideBar" Grid.Column="1" HorizontalAlignment="Right" Height="15" Width="15" Background="White" Foreground="Black" Content="✕" 
-                        Padding="1,1,1,1" Margin="3" FontSize="{StaticResource Fontsize2}" FontWeight="Bold" Click="OnCloseSidebar"/>
+                <Border Grid.ColumnSpan="2" Style="{StaticResource SideBarTop}"/>
+                <Label x:Name="SideBarHeader" 
+                       Grid.Column="0" 
+                       HorizontalAlignment="Left" 
+                       Content="settings"/>
+                <Button x:Name="BtnCloseSideBar" 
+                        Grid.Column="1" 
+                        HorizontalAlignment="Right" 
+                        Height="{StaticResource BaseTileSize}" 
+                        Width="{StaticResource BaseTileSize}" 
+                        Content="✕" 
+                        Padding="1" 
+                        Margin="3" 
+                        FontSize="{StaticResource SmallFontSize}" 
+                        FontWeight="Bold" 
+                        Click="OnCloseSidebar"/>
             </Grid>
-            <Grid x:Name="BrushConfig" DockPanel.Dock="Right" VerticalAlignment="Stretch">
+            <Grid x:Name="BrushConfig" DockPanel.Dock="Right" VerticalAlignment="Stretch" Margin="2,2,4,2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
-                <StackPanel Orientation="Vertical" Grid.Row="0" Margin="0,0,0,5" >
-                    <Label Content="stroke" Padding="2,2,2,0"/>
-                    <Label Content="pt" HorizontalAlignment="Center" Padding="2,0,2,2" Target="{Binding ElementName=brushSlider}"/>
-                </StackPanel>
-                <Slider x:Name="brushSlider" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Minimum="1" Maximum="100" 
-                        TickFrequency="5" TickPlacement="BottomRight" LargeChange="5" 
-                        AutoToolTipPlacement="TopLeft" ValueChanged="OnBrushSizeChanged"/>
+                <Label Grid.Row="0" Content="_pt" Margin="0,16,0,0" Target="{Binding ElementName=brushSlider}"/>
+                <Slider x:Name="brushSlider" Grid.Row="1" 
+                        Orientation="Vertical" 
+                        HorizontalAlignment="Center" 
+                        Minimum="1" Maximum="100" 
+                        TickFrequency="5" 
+                        TickPlacement="BottomRight" 
+                        LargeChange="5" 
+                        AutoToolTipPlacement="TopLeft" 
+                        ValueChanged="OnBrushSizeChanged"/>
                 <StackPanel Orientation="Vertical" Grid.Row="2"  Margin="0,5,0,5">
-                    <Label Content="tip" HorizontalAlignment="Center"/>
-                    <RadioButton x:Name="radioRound" GroupName="brushShape" HorizontalAlignment="Center" Checked="OnBrushShapeChanged">r</RadioButton>
-                    <RadioButton x:Name="radioSquare" GroupName="brushShape" HorizontalAlignment="Center" Checked="OnBrushShapeChanged">s</RadioButton>
+                    <Label Content="tip"/>
+                    <RadioButton x:Name="radioRound" GroupName="brushShape" Checked="OnBrushShapeChanged">r</RadioButton>
+                    <RadioButton x:Name="radioSquare" GroupName="brushShape" Checked="OnBrushShapeChanged">s</RadioButton>
                 </StackPanel>
             </Grid>
 
-            <TabControl>
+            <TabControl Padding="0" BorderThickness="0">
                 <TabItem Header="Stroke">
                     <ListBox x:Name="strokeColorList" 
                              ItemsPanel="{StaticResource ColorWrapPanel}"
@@ -218,7 +309,6 @@
                              ScrollViewer.VerticalScrollBarVisibility="Auto" 
                              SelectionChanged="OnStrokeColorChanged"/>
                 </TabItem>
-
                 <TabItem Header="Fill">
                     <ListBox x:Name="fillColorList" 
                              ItemsPanel="{StaticResource ColorWrapPanel}"
@@ -230,16 +320,19 @@
             </TabControl>
         </DockPanel>
 
-        <StatusBar x:Name="StatusBar" Grid.Row="2" Grid.ColumnSpan="4" Height="25" Margin="0">
+        <StatusBar x:Name="StatusBar" Grid.Row="2" Grid.ColumnSpan="4" Height="{StaticResource BaseItemSize}">
+            <StatusBar.Resources>
+                <Style TargetType="Label" BasedOn="{StaticResource LblStatusBar}"/>
+            </StatusBar.Resources>
             <StackPanel Orientation="Horizontal">
-                <Label Content="tool: " Style="{StaticResource LblStatusBar}"/>
-                <Label x:Name="LblSBTool" Style="{StaticResource LblStatusBar}"   Margin="0,0,50,0"/>
-                <Label Content="size:" Style="{StaticResource LblStatusBar}"/>
-                <Label x:Name="LblStatStrokeThickness" Style="{StaticResource LblStatusBar}" Margin="0,0,50,0" />
-                <Label Content="stroke:" Style="{StaticResource LblStatusBar}"/>
-                <Label x:Name="LblSBStrokeColor" Style="{StaticResource LblStatusBar}"/>
-                <Label Content="fill:" Style="{StaticResource LblStatusBar}"/>
-                <Label x:Name="LblSBFillColor" Style="{StaticResource LblStatusBar}"/>
+                <Label Content="tool:"/>
+                <Label x:Name="LblSBTool" Margin="0,0,16,0"/>
+                <Label Content="size:"/>
+                <Label x:Name="LblStatStrokeThickness" Margin="0,0,16,0"/>
+                <Label Content="stroke / fill:"/>
+                <Label x:Name="LblSBStrokeColor"/>
+                <Label Content="/"/>
+                <Label x:Name="LblSBFillColor"/>
             </StackPanel>
         </StatusBar>
     </Grid>
